@@ -11,9 +11,9 @@ function parseArticle(article){
     let content = article.content;
     let index = 0;
     while(content.indexOf("<code>", index) !== -1){
-        let tagIndex = content.indexOf("<code>");
+        let tagIndex = content.indexOf("<code>", index);
         var segment, segmentElement;
-        if(tagIndex !== 0){
+        if(tagIndex !== index){
             segment = content.substring(index, tagIndex);
             segmentElement = General.textElement("p", segment);
             contentContainer.appendChild(segmentElement);
@@ -57,7 +57,16 @@ let testString = "<code>" +
 "\t{\n" + 
 "\t\tSystem.out.println(\"Hello World\");\n" + 
 "\t}\n" + 
-"}</code>";
+"}</code>" + 
+"Hi this is a code break" + 
+"<code>" + 
+"public class HelloWorld \n" +
+"{ \n" + 
+"\tpublic static void main(String[] args)\n" + 
+"\t{\n" + 
+"\t\tSystem.out.println(\"Hello World\");\n" + 
+"\t}\n" + 
+"}</code>"
 console.log(testString);
 function clearPage(){
     General.clearElement("title");
