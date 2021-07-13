@@ -1,5 +1,3 @@
-import updatePage from "./index";
-
 export class Database {
     static request(suffix, type, data = undefined, onload = undefined){
         const call = new XMLHttpRequest();
@@ -23,7 +21,6 @@ export class Database {
         Database.request("select", "POST", data, (e) => {
             let reply = JSON.parse(e.response);
             console.log(reply);
-            updatePage(reply)
         });
     }
 
@@ -70,7 +67,6 @@ export class Database {
     static deleteArticle(id){
         Database.request("delete", "POST", id, (e) => {
             let reply = JSON.parse(e.response);
-            updateFunction(reply);
             console.log(reply);
         })
     }
@@ -80,6 +76,24 @@ export class General{
     static getUpdateFunction(variable) {
         return (e) => {
             variable = e;
+        }
+    }
+
+    static lineBreak() { 
+        return document.createElement("br");
+    }
+
+    static textElement(tag, text){
+        let parent = document.createElement(tag);
+        let textElement = document.createTextNode(text);
+        parent.appendChild(textElement);
+        return parent;
+    }
+
+    static clearElement(id){
+        var div = document.getElementById(id);
+        while(div.firstChild){
+            div.removeChild(div.firstChild);
         }
     }
 }
