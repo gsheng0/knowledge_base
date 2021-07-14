@@ -9,14 +9,30 @@
       name="description"
       content="Web site created using create-react-app"
     />
+    <style>
+        .code{
+            color: black;
+            background-color: transparent;
+        }
+    </style>
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>React App</title>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root">
-        <div id="main">
+        <nav class="navbar navbar-fixed-top navbar-dark">
+            <div class="container-fluid">
+              <ul class="nav navbar-nav">
+                  <li><input id="search" style="margin-top: 10px" type="text"/></li>
+              </ul>
+            </div>
+          </nav>
+
+
+        <div id="main" class="container" style="padding-top: 40px;">
             <div id="title">
 
             </div>

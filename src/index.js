@@ -1,5 +1,14 @@
-import {General} from "./Util";
+import {General, Database} from "./Util";
 
+function init(){
+    document.getElementById("search").addEventListener("keydown", (e) => {
+        if(e.key === "Enter")
+        {
+            let searchTerm = document.getElementById("search").value;
+            Database.searchForArticle(searchTerm, () => {});
+        }
+    })
+}
 
 function parseArticle(article){
     var titleContainer = document.getElementById("title");
@@ -28,11 +37,14 @@ function parseArticle(article){
                 let innerSegmentElement = General.textElement("code", innerSegment);
                 let tabCount = countTabs(innerSegment);
                 innerSegmentElement.style.paddingLeft = tabCount * 40 + "px";
+                innerSegmentElement.classList.add("code");
                 contentContainer.appendChild(innerSegmentElement);
                 contentContainer.appendChild(General.lineBreak());
                 segmentIndex = segmentTagIndex + 1;
             }
-            contentContainer.appendChild(General.textElement("code", segment.substring(segmentIndex)));
+            let innerSegmentElement = General.textElement("code", segment.substring(segmentIndex));
+            innerSegmentElement.classList.add("code");
+            contentContainer.appendChild(innerSegmentElement);
             contentContainer.appendChild(General.lineBreak());
             index = content.indexOf("</code>", index) + 7;
         }
@@ -48,26 +60,9 @@ function countTabs(line){
     }
     return out;
 }
-let temp = document.createElement("code");
 
-let testString = "<code>" + 
-"public class HelloWorld \n" +
-"{ \n" + 
-"\tpublic static void main(String[] args)\n" + 
-"\t{\n" + 
-"\t\tSystem.out.println(\"Hello World\");\n" + 
-"\t}\n" + 
-"}</code>" + 
-"Hi this is a code break" + 
-"<code>" + 
-"public class HelloWorld \n" +
-"{ \n" + 
-"\tpublic static void main(String[] args)\n" + 
-"\t{\n" + 
-"\t\tSystem.out.println(\"Hello World\");\n" + 
-"\t}\n" + 
-"}</code>"
-console.log(testString);
+
+
 function clearPage(){
     General.clearElement("title");
     General.clearElement("content");
@@ -76,10 +71,32 @@ function clearPage(){
 export function updatePage(article) {
 
 }
-let testObj = {
-    title: "This is a temporary title",
-    content: testString,
-    date: "today",
-    id: 13
+
+function test() {
+    let testString = "<code>" + 
+    "public class HelloWorld \n" +
+    "{ \n" + 
+    "\tpublic static void main(String[] args)\n" + 
+    "\t{\n" + 
+    "\t\tSystem.out.println(\"Hello World\");\n" + 
+    "\t}\n" + 
+    "}</code>" + 
+    "Hi this is a code break" + 
+    "<code>" + 
+    "public class HelloWorld \n" +
+    "{ \n" + 
+    "\tpublic static void main(String[] args)\n" + 
+    "\t{\n" + 
+    "\t\tSystem.out.println(\"Hello World\");\n" + 
+    "\t}\n" + 
+    "}</code>"
+    let testObj = {
+        title: "This is a temporary title",
+        content: testString,
+        date: "today",
+        id: 13
+    }
+    parseArticle(testObj);
 }
-parseArticle(testObj);
+init();
+test();
