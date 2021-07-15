@@ -1,124 +1,46 @@
 import {General, Database} from "./Util";
 
 function init(){
+    document.getElementById("home").addEventListener("click", homePage)
 
-    document.getElementById("home").addEventListener("click", (e) => {
-        Database.getMostRecentArticles(5, (reply) => {
-            clearPage();
-            let titleContainer = document.getElementById("title");
-            let contentContainer = document.getElementById("content");
+    document.getElementById("search").addEventListener("keydown", (e) => { if(e.key === "Enter") { search(); }});
 
-            titleContainer.appendChild(General.textElement("h1", "George Sheng's Code Knowledge Base"));
+    document.getElementById("searchButton").addEventListener("click", search)
 
-            for(let i = 0; i < reply.length; i++){
-                let container = General.containerElement([]);
+    document.getElementById("create").addEventListener("click", createPage);
+    
+    homePage();
+}
 
-                let titlePreviewElement = General.textElement("h3", reply[i].title);
-                container.appendChild(titlePreviewElement);
-
-                let articlePreviewText = preview(reply[i].content);
-
-                let articlePreviewElement = General.textElement("p", articlePreviewText);
-                container.appendChild(articlePreviewElement);
-                container.classList.add("border");
-                container.addEventListener("click", (e) => {
-                    clearPage();
-                    parseArticle(reply[i]);
-                });
-                contentContainer.appendChild(container);
-            }
-        });
-    })
-
-    document.getElementById("search").addEventListener("keydown", (e) => {
-
-        if(e.key === "Enter")
-        {
-            let searchTerm = document.getElementById("search").value;
-            Database.searchForArticle(searchTerm, (articles) => {
-                clearPage();
-                console.log("Just cleared page");
-                let titleElement = General.textElement("h1", "Search results for \"" + searchTerm + "\":");
-                document.getElementById("title").appendChild(titleElement);
-                let contentElement = document.getElementById("content");
-                for(let i = 0; i < articles.length; i++){
-                    let container = General.containerElement([]);
-                
-                    let titlePreviewElement = General.textElement("h3", articles[i].title);
-                    container.appendChild(titlePreviewElement);
-
-                    let filteredArticleText = preview(articles[i].content);
-
-                    let articlePreviewElement = General.textElement("p", filteredArticleText);
-                    container.appendChild(articlePreviewElement);
-                    container.classList.add("border");
-                    container.addEventListener("click", (e) => {
-                        clearPage();
-                        parseArticle(articles[i]);
-                    });
-
-                    contentElement.appendChild(container);
-                }
-            });
-        }
-    });
-
-    document.getElementById("create").addEventListener("click", (e) => {
+function homePage(){
+    Database.getMostRecentArticles(5, (reply) => {
         clearPage();
         let titleContainer = document.getElementById("title");
-        let contentContainer = document.getElementById("content");
-
-        titleContainer.appendChild(General.textElement("h1", "Write an Article"));
-        let articleTitleInput = General.inputElement("Article Title");
-        let articleContentInput = General.textAreaElement("Article Content");
-        let submitButton = General.buttonElement("Submit");
-
-        submitButton.addEventListener("click", (e) => {
-            submitButton.disabled = true;
-            Database.uploadArticle({title: articleTitleInput.value, content: articleContentInput.value }, (reply) => {
-                submitButton.disabled = false;
-                articleTitleInput.value = "";
-                articleContentInput.value = "";
-            });
-        });
-
-        contentContainer.appendChild(articleTitleInput);
-        contentContainer.appendChild(General.lineBreak());
-        contentContainer.appendChild(articleContentInput);
-        contentContainer.appendChild(submitButton);
-
-        articleContentInput.addEventListener("keydown", (e) => {
-            if (e.key === 'Tab') {
-                e.preventDefault();
-                var start = articleContentInput.selectionStart;
-                var end = articleContentInput.selectionEnd;
-            
-                articleContentInput.value = articleContentInput.value.substring(0, start) +
-                  "\t" + articleContentInput.value.substring(end);
-            
-                articleContentInput.selectionStart =
-                  articleContentInput.selectionEnd = start + 1;
-            }
-
-            if(e.key === "Enter"){
-
-                // assuming 'articleContentInput' is textarea
-        
-                var cursorPos = articleContentInput.selectionStart;
-                var curentLine = articleContentInput.value.substr(0, articleContentInput.selectionStart).split("\n").pop();
-                var indent = curentLine.match(/^\s*/)[0];
-                var value = articleContentInput.value;
-                var textBefore = value.substring(0,  cursorPos );
-                var textAfter  = value.substring( cursorPos, value.length );
-        
-                e.preventDefault(); // avoid creating a new line since we do it ourself
-                articleContentInput.value = textBefore + "\n" + indent + textAfter;
-                articleContentInput.selectionStart = cursorPos + indent.length + 1; // +1 is for the \n
-            }
-            
-        })
-
+        titleContainer.appendChild(General.textElement("h1", "George Sheng's Code Knowledge Base"));
+        displayArticles(reply);
     });
+}
+
+function displayArticles(articles){
+    let contentContainer = document.getElementById("content");
+
+    for(let i = 0; i < articles.length; i++){
+        let container = General.containerElement([]);
+
+        let titlePreviewElement = General.textElement("h3", articles[i].title);
+        container.appendChild(titlePreviewElement);
+
+        let articlePreviewText = preview(articles[i].content);
+
+        let articlePreviewElement = General.textElement("p", articlePreviewText);
+        container.appendChild(articlePreviewElement);
+        container.classList.add("border");
+        container.addEventListener("click", (e) => {
+            clearPage();
+            parseArticle(articles[i]);
+        });
+        contentContainer.appendChild(container);   
+    }
 }
 
 function parseArticle(article){
@@ -195,7 +117,18 @@ function parseArticle(article){
     contentContainer.appendChild(General.lineBreak());
     let tabs  = countTabs(segment.substring(segmentIndex));
     innerSegmentElement.style.paddingLeft = tabs * 40 + "px";
+    innerSegmentElement.style.lineHeight = "100%";
 
+}
+
+function search(){
+    let searchTerm = document.getElementById("search").value;
+    Database.searchForArticle(searchTerm, (articles) => {
+        clearPage();
+        let titleElement = General.textElement("h1", "Search results for \"" + searchTerm + "\":");
+        document.getElementById("title").appendChild(titleElement);
+        displayArticles(articles);
+    });
 }
 
 function countTabs(line){
@@ -205,16 +138,83 @@ function countTabs(line){
         out +=1;
         index = line.indexOf("\t", index) + 1;
     }
+    let consecSpaceCounter = 0;
+    for(let i = 0; i < line.length; i++){
+        if(line.charAt(i) === " "){
+            if(consecSpaceCounter === 3){
+                out += 1;
+                consecSpaceCounter = 0;
+            }
+            else{
+                consecSpaceCounter += 1;
+            }
+        }
+        else{
+            break;
+        }
+    }
     return out;
 }
-
-
 
 function clearPage(){
     General.clearElement("title");
     General.clearElement("content");
 }
 
+function createPage() {
+    clearPage();
+    let titleContainer = document.getElementById("title");
+    let contentContainer = document.getElementById("content");
+
+    titleContainer.appendChild(General.textElement("h1", "Write an Article"));
+    let articleTitleInput = General.inputElement("Article Title");
+    let articleContentInput = General.textAreaElement("Article Content");
+    let submitButton = General.buttonElement("Submit");
+
+    submitButton.addEventListener("click", (e) => {
+        submitButton.disabled = true;
+        Database.uploadArticle({title: articleTitleInput.value, content: articleContentInput.value }, (reply) => {
+            submitButton.disabled = false;
+            articleTitleInput.value = "";
+            articleContentInput.value = "";
+        });
+    });
+
+    contentContainer.appendChild(articleTitleInput);
+    contentContainer.appendChild(General.lineBreak());
+    contentContainer.appendChild(articleContentInput);
+    contentContainer.appendChild(submitButton);
+
+    articleContentInput.addEventListener("keydown", (e) => {
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            var start = articleContentInput.selectionStart;
+            var end = articleContentInput.selectionEnd;
+        
+            articleContentInput.value = articleContentInput.value.substring(0, start) +
+              "\t" + articleContentInput.value.substring(end);
+        
+            articleContentInput.selectionStart =
+              articleContentInput.selectionEnd = start + 1;
+        }
+
+        if(e.key === "Enter"){
+            var cursorPos = articleContentInput.selectionStart;
+            var selectionLength = articleContentInput.selectionEnd - cursorPos;
+            var curentLine = articleContentInput.value.substr(0, articleContentInput.selectionStart).split("\n").pop();
+            var indent = curentLine.match(/^\s*/)[0];
+            var value = articleContentInput.value;
+            var textBefore = value.substring(0,  cursorPos );
+            var textAfter  = value.substring( cursorPos, value.length );
+    
+            e.preventDefault();
+            articleContentInput.value = textBefore + "\n" + indent + textAfter;
+            articleContentInput.selectionStart = cursorPos + indent.length + 1;
+            articleContentInput.selectionEnd = selectionLength + cursorPos + indent.length + 1;
+        }
+        
+    });
+}
 
 function preview(str){
     let out = "";
@@ -236,22 +236,6 @@ function preview(str){
     }
     return out.substring(0, 50);
 }
-let testString = "<code>" + 
-"public class HelloWorld \n" +
-"{ \n" + 
-"\tpublic static void main(String[] args)\n" + 
-"\t{\n" + 
-"\t\tSystem.out.println(\"Hello World\");\n" + 
-"\t}\n" + 
-"}</code>" + 
-"Hi articleContentInput is a code break" + 
-"<code>" + 
-"public class HelloWorld \n" +
-"{ \n" + 
-"\tpublic static void main(String[] args)\n" + 
-"\t{\n" + 
-"\t\tSystem.out.println(\"Hello World\");\n" + 
-"\t}\n" + 
-"}</code>";
 
 init();
+
