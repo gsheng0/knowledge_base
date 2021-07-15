@@ -18,7 +18,7 @@ function init(){
                     let titlePreviewElement = General.textElement("h3", articles[i].title);
                     container.appendChild(titlePreviewElement);
 
-                    let filteredArticleText = filter(articles[i].content);
+                    let filteredArticleText = preview(articles[i].content);
 
                     let articlePreviewElement = General.textElement("p", filteredArticleText);
                     container.appendChild(articlePreviewElement);
@@ -45,10 +45,11 @@ function init(){
         let submitButton = General.buttonElement("Submit");
 
         submitButton.addEventListener("click", (e) => {
-            console.log(articleContentInput.value);
-            console.log(formatArticle(articleContentInput.value));
+            submitButton.disabled = true;
             Database.uploadArticle({title: articleTitleInput.value, content: articleContentInput.value }, (reply) => {
-                
+                submitButton.disabled = false;
+                articleTitleInput.value = "";
+                articleContentInput.value = "";
             });
         });
 
@@ -63,28 +64,29 @@ function init(){
                 var start = articleContentInput.selectionStart;
                 var end = articleContentInput.selectionEnd;
             
-                // set textarea value to: text before caret + tab + text after caret
                 articleContentInput.value = articleContentInput.value.substring(0, start) +
                   "\t" + articleContentInput.value.substring(end);
             
-                // put caret at right position again
                 articleContentInput.selectionStart =
                   articleContentInput.selectionEnd = start + 1;
             }
 
             if(e.key === "Enter"){
-                e.preventDefault();
-                var start = articleContentInput.selectionStart;
-                var end = articleContentInput.selectionEnd;
-            
-                // set textarea value to: text before caret + tab + text after caret
-                articleContentInput.value = articleContentInput.value.substring(0, start) +
-                  "\n" + articleContentInput.value.substring(end);
-            
-                // put caret at right position again
-                articleContentInput.selectionStart =
-                  articleContentInput.selectionEnd = start + 1;
+
+                // assuming 'articleContentInput' is textarea
+        
+                var cursorPos = articleContentInput.selectionStart;
+                var curentLine = articleContentInput.value.substr(0, articleContentInput.selectionStart).split("\n").pop();
+                var indent = curentLine.match(/^\s*/)[0];
+                var value = articleContentInput.value;
+                var textBefore = value.substring(0,  cursorPos );
+                var textAfter  = value.substring( cursorPos, value.length );
+        
+                e.preventDefault(); // avoid creating a new line since we do it ourself
+                articleContentInput.value = textBefore + "\n" + indent + textAfter;
+                articleContentInput.selectionStart = cursorPos + indent.length + 1; // +1 is for the \n
             }
+            
         })
 
     });
@@ -112,8 +114,8 @@ function parseArticle(article){
                 let segmentTagIndex = segment.indexOf("\n", segmentIndex);
                 let innerSegment = segment.substring(segmentIndex, segmentTagIndex);
                 let innerSegmentElement = General.textElement("p", innerSegment);
-                let tabCount = countTabs(innerSegment);
-                innerSegmentElement.style.paddingLeft = tabCount * 40 + "px";
+                let tabs = countTabs(innerSegment);
+                innerSegmentElement.style.paddingLeft = tabs * 40 + "px";
                 innerSegmentElement.style.lineHeight = "100%";
                 contentContainer.appendChild(innerSegmentElement);
 
@@ -131,8 +133,8 @@ function parseArticle(article){
                 let segmentTagIndex = segment.indexOf("\n", segmentIndex);
                 let innerSegment = segment.substring(segmentIndex, segmentTagIndex);
                 let innerSegmentElement = General.textElement("code", innerSegment);
-                let tabCount = countTabs(innerSegment);
-                innerSegmentElement.style.paddingLeft = tabCount * 40 + "px";
+                let tabs = countTabs(innerSegment);
+                innerSegmentElement.style.paddingLeft = tabs * 40 + "px";
                 innerSegmentElement.classList.add("code");
                 contentContainer.appendChild(innerSegmentElement);
                 contentContainer.appendChild(General.lineBreak());
@@ -151,9 +153,9 @@ function parseArticle(article){
         let segmentTagIndex = segment.indexOf("\n", segmentIndex);
         let innerSegment = segment.substring(segmentIndex, segmentTagIndex);
         let innerSegmentElement = General.textElement("p", innerSegment);
-        let tabCount = countTabs(innerSegment);
+        let tabs = countTabs(innerSegment);
 
-        innerSegmentElement.style.paddingLeft = tabCount * 40 + "px";
+        innerSegmentElement.style.paddingLeft = tabs * 40 + "px";
         
         innerSegmentElement.style.lineHeight = "100%";
         contentContainer.appendChild(innerSegmentElement);
@@ -162,20 +164,9 @@ function parseArticle(article){
     let innerSegmentElement = General.textElement("p", segment.substring(segmentIndex));
     contentContainer.appendChild(innerSegmentElement);
     contentContainer.appendChild(General.lineBreak());
-    let tabCount  = countTabs(segment.substring(segmentIndex));
-    innerSegmentElement.style.paddingLeft = tabCount * 40 + "px";
+    let tabs  = countTabs(segment.substring(segmentIndex));
+    innerSegmentElement.style.paddingLeft = tabs * 40 + "px";
 
-}
-
-function formatArticle(article){
-    let out = "";
-    for(let i = 0; i < article.length; i++){
-        if(article.charAt(i) === "\\"){
-            out += "\\";
-        }
-        out += article.charAt(i);
-    }
-    return out;
 }
 
 function countTabs(line){
@@ -196,7 +187,7 @@ function clearPage(){
 }
 
 
-function filter(str){
+function preview(str){
     let out = "";
     for(let i = 0; i < str.length; i++){
         if(str.charAt(i) === "\\"){
@@ -224,7 +215,7 @@ let testString = "<code>" +
 "\t\tSystem.out.println(\"Hello World\");\n" + 
 "\t}\n" + 
 "}</code>" + 
-"Hi this is a code break" + 
+"Hi articleContentInput is a code break" + 
 "<code>" + 
 "public class HelloWorld \n" +
 "{ \n" + 
@@ -233,15 +224,5 @@ let testString = "<code>" +
 "\t\tSystem.out.println(\"Hello World\");\n" + 
 "\t}\n" + 
 "}</code>";
-function test() {
 
-    let testObj = {
-        title: "This is a temporary title",
-        content: testString,
-        date: "today",
-        id: 13
-    }
-    parseArticle(testObj);
-}
 init();
-test();
