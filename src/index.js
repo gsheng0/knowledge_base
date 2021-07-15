@@ -1,6 +1,35 @@
 import {General, Database} from "./Util";
 
 function init(){
+
+    document.getElementById("home").addEventListener("click", (e) => {
+        Database.getMostRecentArticles(5, (reply) => {
+            clearPage();
+            let titleContainer = document.getElementById("title");
+            let contentContainer = document.getElementById("content");
+
+            titleContainer.appendChild(General.textElement("h1", "George Sheng's Code Knowledge Base"));
+
+            for(let i = 0; i < reply.length; i++){
+                let container = General.containerElement([]);
+
+                let titlePreviewElement = General.textElement("h3", reply[i].title);
+                container.appendChild(titlePreviewElement);
+
+                let articlePreviewText = preview(reply[i].content);
+
+                let articlePreviewElement = General.textElement("p", articlePreviewText);
+                container.appendChild(articlePreviewElement);
+                container.classList.add("border");
+                container.addEventListener("click", (e) => {
+                    clearPage();
+                    parseArticle(reply[i]);
+                });
+                contentContainer.appendChild(container);
+            }
+        });
+    })
+
     document.getElementById("search").addEventListener("keydown", (e) => {
 
         if(e.key === "Enter")

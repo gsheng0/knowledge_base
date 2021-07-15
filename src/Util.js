@@ -71,6 +71,14 @@ export class Database {
             console.log(reply);
         })
     }
+
+    static getMostRecentArticles(n, updateFunction){
+        Database.request("most-recent", "POST", n, (e) => {
+            let reply = JSON.parse(e.response);
+            updateFunction(reply);
+            console.log(reply);
+        })
+    }
 }
 
 export class General{
