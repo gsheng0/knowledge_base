@@ -32,10 +32,11 @@ export class Database {
         });
     }
 
-    static uploadArticle(article){
-        let data = JSON.stringify({title: article.title, content: article.content});
+    static uploadArticle(article, onCompleteFunction){
+        let data = JSON.stringify(article);
         Database.request("upload", "POST", data, (e) => {
             let reply = JSON.parse(e.response);
+            onCompleteFunction(reply);
             console.log(reply);
         })
     }
@@ -95,5 +96,42 @@ export class General{
         while(div.firstChild){
             div.removeChild(div.firstChild);
         }
+    }
+
+    static containerElement(classList){
+        let container = document.createElement("div");
+
+        return container;
+    }
+
+    static inputElement(placeHolder){
+        let input = document.createElement("input");
+        input.classList.add("form-control");
+        input.placeholder = placeHolder;
+        return input;
+    }
+
+    static textAreaElement(placeHolder){
+        let textArea = document.createElement("textarea");
+        textArea.classList.add("form-control");
+        textArea.placeholder = placeHolder;
+        textArea.rows = 30;
+        return textArea;
+    }
+
+    static formElement(){
+        let form = document.createElement("form");
+        return form;
+    }
+
+    static buttonElement(text){
+        let button = document.createElement("button");
+        button.classList.add("btn");
+        button.classList.add("btn-outline-success");
+        button.classList.add("my-2");
+        button.classList.add("my-sm-0")
+        button.textContent = text;
+        button.style.marginTop="40px";
+        return button;
     }
 }
