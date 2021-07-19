@@ -8,7 +8,7 @@ function init(){
     document.getElementById("searchButton").addEventListener("click", search)
 
     document.getElementById("create").addEventListener("click", createPage);
-    
+
     homePage();
 }
 
@@ -35,6 +35,7 @@ function displayArticles(articles){
         let articlePreviewElement = General.textElement("p", articlePreviewText);
         container.appendChild(articlePreviewElement);
         container.classList.add("border");
+        container.classList.add("article-preview");
         container.addEventListener("click", (e) => {
             clearPage();
             parseArticle(articles[i]);
@@ -234,7 +235,7 @@ function preview(str){
             out += str.charAt(i);
         }
     }
-    return out.substring(0, 50);
+    return out.substring(0, 300);
 }
 
 init();
