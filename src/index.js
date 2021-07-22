@@ -56,7 +56,7 @@ function parseArticle(article){
     let index = 0;
     while(content.indexOf("<code>", index) !== -1){
         let tagIndex = content.indexOf("<code>", index);
-        var segment, segmentElement;
+        var segment;
         if(tagIndex !== index){
             segment = content.substring(index, tagIndex);
             let segmentIndex = 0;
