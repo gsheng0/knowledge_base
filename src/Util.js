@@ -1,7 +1,7 @@
 export class Database {
     static request(suffix, type, data = undefined, onload = undefined){
         const call = new XMLHttpRequest();
-        call.open(type, "http://localhost:8080/" + suffix);
+        call.open(type, "https://service.gsheng.me:8443/kb/" + suffix);
         call.setRequestHeader('Content-Type', 'application/json');
         if(data !== undefined){
             call.send(data);
