@@ -45,14 +45,18 @@ function displayArticles(articles){
 }
 
 function parseArticle(article){
+    console.log("article: " + article);
     var titleContainer = document.getElementById("title");
-    var contentContainer = document.getElementById("content");
-
     titleContainer.appendChild(General.textElement("h1", article.title));
-    contentContainer.appendChild(General.textElement("h5", article.date));
-    
-    let content = article.content;
 
+    var contentContainer = document.getElementById("content");
+    var labelList = "";
+    for (var i=0; i<article.labels.length; i++)
+        labelList += " " + article.labels[i];
+    contentContainer.appendChild(General.textElement("h7", "Tags: " + labelList));
+
+    // contentContainer.appendChild(General.textElement("p", article.content));    
+    let content = article.content;
     let index = 0;
     while(content.indexOf("<code>", index) !== -1){
         let tagIndex = content.indexOf("<code>", index);
@@ -119,6 +123,8 @@ function parseArticle(article){
     let tabs  = countTabs(segment.substring(segmentIndex));
     innerSegmentElement.style.paddingLeft = tabs * 40 + "px";
     innerSegmentElement.style.lineHeight = "100%";
+
+    contentContainer.appendChild(General.textElement("h7", "created on: " + article.createOn + "    updated on: " + article.updateOn));
 
 }
 
