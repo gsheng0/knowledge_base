@@ -2,7 +2,7 @@ import React from "react";
 import "../index.css";
 import Article from "./Article";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {Database} from "../Util";
 
 function ArticleList () {
@@ -17,31 +17,33 @@ function ArticleList () {
         // }
     ]);
 
-    const [searchCriteria, setSearchCriteria] = useState("");
-
-    function onSearchCriteriaChange(event) {
-        let inputCriteria = event.target.value;
-        setSearchCriteria(inputCriteria);
-        event.preventDefault();
-    }
-
-    function retrieveList(event) {
-        Database.searchForArticle(searchCriteria, (dbArticleList) => {
+    useEffect(()=>{
+        Database.getMostRecentArticles(4, (dbArticleList) => {
             setArtcleList(dbArticleList);
         });        
+    }, []);
+
+    function retrieveList(event) {
         event.preventDefault();
+        var inputCriteria = event.target.searchCriteriaField.value;
+        console.log("criteria:" + inputCriteria);
+        Database.searchForArticle(inputCriteria, (dbArticleList) => {
+            setArtcleList(dbArticleList);
+        });        
     }
 
     return (
         <div className='articleList'>
             <div>
-                <form>
+                <form onSubmit={retrieveList}>
                     <input 
-                        name="searchCriteria" 
+                        id="searchCriteriaField" 
+                        name="searchCriteriaField" 
+                        type="text"
                         placeholder="search critria" 
-                        value={searchCriteria} 
-                        onChange={onSearchCriteriaChange} />
-                    <button onClick={retrieveList}>retrieve</button>
+                    />
+                    <br />
+                    <button>retrieve</button>
                 </form>
             </div>
             { articleList.map(Article) }

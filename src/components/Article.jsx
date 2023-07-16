@@ -7,7 +7,7 @@ import Timestamps from "./Timestamps";
 import Content from "./Content";
 
 function Article (article) {
-    console.log(article);
+    console.log("rendering: " + article);
     return (
         <div className='article' key={article.id}>            
             <Title title={article.title} />
