@@ -10,7 +10,7 @@ function Article (article) {
     console.log("rendering: " + article);
     return (
         <div className='article' key={article.id}>            
-            <Title title={article.title} />
+            <Title title={article.title} id={article.id} />
             <TagList labels={article.labels} />
             <Timestamps createOn={article.createOn} updateOn={article.updateOn} />
             <Content content={article.content} />
