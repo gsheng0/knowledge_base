@@ -6,14 +6,28 @@ import TagList from "./TagList";
 import Timestamps from "./Timestamps";
 import Content from "./Content";
 
-function Article (article) {
-    console.log("rendering: " + article);
+function Article (props) {
+    function handleCilck() {
+        props.onArticleDeleteRequest(props.item.id);
+    }
+
+    console.log("rendering: " + props);
     return (
-        <div className='article' key={article.id}>            
-            <Title title={article.title} id={article.id} />
-            <TagList labels={article.labels} />
-            <Timestamps createOn={article.createOn} updateOn={article.updateOn} />
-            <Content content={article.content} />
+        <div className='article' key={props.item.id}>            
+            <Title 
+                title={props.item.title} 
+                id={props.item.id} 
+                status={props.item.status}                     
+            />
+            <TagList labels={props.item.labels} />
+            <Timestamps 
+                createOn={props.item.createOn} 
+                updateOn={props.item.updateOn}                     
+            />            
+            <Content content={props.item.content} />        
+            <button>edit</button>&nbsp;&nbsp;
+            {/* <button>delete</button> */}
+            <button onClick={handleCilck}>delete</button>    
         </div>
     )
 }

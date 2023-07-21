@@ -1,9 +1,9 @@
 import React from "react";
 import "../index.css";
 
-function Title (article) {
+function Title (prop) {
     return (
-        <div className="title"><h2><b>{article.title}</b>({article.id})</h2></div>        
+        <div className="title"><h4><b>{prop.title}</b>&nbsp;({prop.id})&nbsp;({prop.status})</h4></div>        
     )
 }
 
