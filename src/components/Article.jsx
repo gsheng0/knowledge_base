@@ -7,8 +7,12 @@ import Timestamps from "./Timestamps";
 import Content from "./Content";
 
 function Article (props) {
-    function handleCilck() {
+    function handleDelete() {
         props.onArticleDeleteRequest(props.item.id);
+    }
+
+    function handleEdit() {
+        props.onArticleEditRequest(props.item.id);
     }
 
     console.log("rendering: " + props);
@@ -25,9 +29,8 @@ function Article (props) {
                 updateOn={props.item.updateOn}                     
             />            
             <Content content={props.item.content} />        
-            <button>edit</button>&nbsp;&nbsp;
-            {/* <button>delete</button> */}
-            <button onClick={handleCilck}>delete</button>    
+            <button onClick={handleEdit}>edit</button>&nbsp;&nbsp;
+            <button onClick={handleDelete}>delete</button>    
         </div>
     )
 }
