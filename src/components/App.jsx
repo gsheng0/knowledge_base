@@ -52,20 +52,40 @@ function App () {
             articleList
                 .filter((article)=>{ return article.status !== "intact" })
                 .map((article) => {
-                    console.log("saving " + article.id + " " + article.title + "......");
-                    Database.uploadArticle(article, (rowsUpdated) => { });
-                    article.status = "intact";
+                    if (article.status === "new") {
+                        console.log("inserting " + article.id + " " + article.title + "......");
+                        Database.uploadArticle(article, (rowsUpdated) => { });
+                    }
+                    else if (article.status === "deleted") {
+                        console.log("deleting " + article.id + " " + article.title + "......");
+                        Database.deleteArticle(article.id);
+                    }
+                    else if (article.status === "modified") {
+
+                    }
                     return article;
                 });
         if (savedArticleList.length !== 0) {
-            // var newArticleList = articleList.filter((article)=>{ article.status = "intact"; return true; });
-            var newArticleList = articleList.filter((article)=>{ article.status = "intact"; return true; });
+            var newArticleList = 
+            articleList.filter((article)=>{ 
+                var keep = (article.status !== "deleted") ;
+                article.status = "intact"; 
+                return keep; 
+            });
             setArticleList(newArticleList);
         }
     }
 
     function deleteArticle(id) {
         console.log("deleting: " + id);
+        var leftArticleList = 
+        articleList.map((article)=>{ 
+            if (article.id === id) {
+                article.status = "deleted"; 
+            }
+            return article;
+        });
+        setArticleList(leftArticleList);
     }
 
     function submit(event) {
@@ -119,24 +139,5 @@ function App () {
         </div> 
      ) ;
 };
-
-                /* 
-                    articleList.map(Article)
-
-                    articleList.map((article) => {
-                        return (
-                        <Article 
-                            key={article.id}
-                            id={article.id} 
-                            title={article.title}
-                            status={article.status}
-                            labels={article.labels}
-                            createOn={article.createOn}
-                            updateOn={article.updateOn}
-                            content={article.content}                        
-                        />);
-                        // article={article}
-                        // onClickDelete={deleteArticle}
-                */
 
 export default App;
