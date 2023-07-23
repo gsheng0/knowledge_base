@@ -1,22 +1,31 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { v4 as uuid } from "uuid";
-import Modal from 'react-modal';
 
 import {Database} from "../Util";
 
 import "../index.css";
-import Article from "./Article";
+import MenuBar from "./MenuBar";
+import ArticleList from "./ArticleList";
+import EditArticleModal from "./EditArticleModal";
+import SearchCriterialModal from "./SearchCriteriaModal";
 
 function App () {
+    /* ----------- states and effects
+       ----------- */
     const [articleList, setArticleList] = useState([]);
     const [searchModalIsOpen, setSearchModalIsOpen] = useState(false);
     const [articleModalIsOpen, setArticleModalIsOpen] = useState(false);
     const [article, setArticle] = useState({});
     const [searchCriteria, setSearchCriteria] = useState("");
 
-    /* ---------------
-        Search Article
+    useEffect(()=>{
+        Database.getMostRecentArticles(3, (dbArticleList) => {
+            setArticleList(dbArticleList);
+        }); }, [] // only when initializing
+    ); 
+
+    /* --------------- Search Article
        --------------- */
     function searchArticle() { setSearchModalIsOpen(true); }
 
@@ -27,21 +36,9 @@ function App () {
         retrieve(inputCriteria);
     }
     
-    function retrieve(inputCriteria) {
-        if (inputCriteria === "") {
-            inputCriteria = "WILL-NEVER-EXIST";
-        }
-        setSearchCriteria(inputCriteria);
-        console.log("criteria:" + inputCriteria);
-        Database.searchForArticle(inputCriteria, (dbArticleList) => {
-            setArticleList(dbArticleList);
-        });        
-    }
-
     function cancelSearchModal() { setSearchModalIsOpen(false); }
 
-    /* ---------------
-        create Article
+    /* --------------- create Article
        --------------- */
     function newArticle() {
         var datetimestr = new Date().toISOString();
@@ -112,11 +109,24 @@ function App () {
         console.log("cancel from article Modal");
     }
 
-    useEffect(()=>{
-        Database.getMostRecentArticles(3, (dbArticleList) => {
+    /* -------------------- mangaging labels
+       -------------------- */
+    function labelAdm() {
+
+    }
+
+    /* ------- db 
+       ------- */
+    function retrieve(inputCriteria) {
+        if (inputCriteria === "") {
+            inputCriteria = "WILL-NEVER-EXIST";
+        }
+        setSearchCriteria(inputCriteria);
+        console.log("criteria:" + inputCriteria);
+        Database.searchForArticle(inputCriteria, (dbArticleList) => {
             setArticleList(dbArticleList);
-        }); }, [] // only when initializing
-    ); 
+        });        
+    }
 
     function save() {
         var savedArticleList = 
@@ -154,59 +164,32 @@ function App () {
 
     return (
         <div id="App">
-            <div>
-                <button onClick={searchArticle}><h3>Search Article</h3></button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <button onClick={newArticle}><h3>New Article</h3></button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <button onClick={save}><h3>Save Change</h3></button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <button onClick={revert}><h3>Revert Change</h3></button>
-            </div>
-            <div className="AticleList">
-                { 
-                    articleList.map((article) => {
-                        return (
-                        <Article 
-                            key={article.id}
-                            item={article}
-                            onArticleDeleteRequest={deleteArticle}
-                            onArticleEditRequest={editArticle}
-                        />);
-                    })
-                }    
-            </div>
-            <div>
-                <Modal isOpen={searchModalIsOpen} contentLabel="Search Criteria Modal" >
-                    <h3>Enter Search Criteria</h3>
-                    <form onSubmit={applySearchModal}>
-                        <input 
-                            id="searchCriteriaField" 
-                            name="searchCriteriaField" 
-                            type="text"
-                            placeholder="search critria" 
-                            defaultValue={searchCriteria}
-                        /> <br />
-                        <button onClick={cancelSearchModal}>Cancel</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <button>Apply</button>
-                    </form>
-                </Modal>
-            </div>
-            <div>
-                <Modal isOpen={articleModalIsOpen} contentLabel="Article Editing Modal" >
-                    <h2>{ article.id === "" ? "Creating New " : "Editing Existing "} Article......</h2><br />
-                    <form onSubmit={applyArticleModal}>
-                        <label>ID &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                            <input name="id" type="text" placeholder="id" readOnly value={article.id}/><br />
-                        <label>TITLE &nbsp;&nbsp;&nbsp;&nbsp;</label>
-                            <input name="title" type="text" placeholder="Title" defaultValue={article.title}/><br /><br />
-                        <textarea name="content" placeholder="content" rows={20} cols={100} defaultValue={article.content}/><br />
-                        <label>Status &nbsp;&nbsp;
-                            </label><input name="status" type="text"  placeholder="status" readOnly value={article.status}/><br /><br />
-                        <button onClick={cancelArticleModal}>Cancel</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <button type="submit">Apply</button>
-                    </form>
-                </Modal>
-            </div>            
+            <MenuBar 
+                onSearch={searchArticle}
+                onNew={newArticle}
+                onSave={save}
+                onRevert={revert}
+                onLabel={labelAdm}
+            />
+            <ArticleList 
+                articleListToShow={articleList} 
+                onArticleEdit={editArticle}
+                onArticleDelete={deleteArticle}
+            />
+            <SearchCriterialModal  
+                popup={searchModalIsOpen}
+                onSubmit={applySearchModal}
+                onCancel={cancelSearchModal}
+                criteria={searchCriteria}
+            />
+            <EditArticleModal
+                popup={articleModalIsOpen}
+                onSubmit={applyArticleModal}
+                onCancel={cancelArticleModal}
+                articleToEdit={article}
+            />
         </div> 
-     ) ;
+    ) ;
 };
 
 export default App;
