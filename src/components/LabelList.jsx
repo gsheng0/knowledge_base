@@ -1,13 +1,13 @@
 import React from "react";
-import Tag from "./Tag"
+import Label from "./Label"
 import "../index.css";
 
-function TagList (article) {
+function LabelList (Props) {
     return (
         <div className="labelList" >
-            {article.labels.map(Tag)}
+            {Props.labelList.map(Label)}
         </div>
     )
 }
 
-export default TagList;
+export default LabelList;

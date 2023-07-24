@@ -11,7 +11,7 @@ function ArticleList (props) {
                 return (
                     <Article 
                         key={article.id}
-                        item={article}
+                        articleToShow={article}
                         onArticleDeleteRequest={props.onArticleDelete}
                         onArticleEditRequest={props.onArticleEdit}
                     />

@@ -46,7 +46,7 @@ export class Database {
 
     static updateArticle(article){
         let data = JSON.stringify({id: article.id, title: article.title, content: article.content, date: article.date});
-        Database.request("update", "POST", data, (e) => {
+        Database.request("update-article", "POST", data, (e) => {
             let reply = JSON.parse(e.response);
             console.log(reply);
         })
@@ -77,11 +77,27 @@ export class Database {
     }
 
     static getMostRecentArticles(n, updateFunction){
-        Database.request("most-recent", "POST", n, (e) => {
+        Database.request("most-recent-articles", "POST", n, (e) => {
             let reply = JSON.parse(e.response);
             updateFunction(reply);
             console.log(reply);
         })
+    }
+
+    static updateCriteria(criteria) {
+        console.log("updating criteria: " + criteria);
+        Database.request("update-criteria", "POST", criteria, (e) => {
+            let reply = JSON.parse(e.response);
+            console.log(reply);
+        })
+    }
+
+    static getMostRecentCriteria(userid, updateFunction){
+        Database.request("most-recent-criteria", "POST", userid, (e) => {
+            console.log(e.response);
+            let reply = JSON.parse(e.response);        
+            updateFunction(reply);    
+        });
     }
 }
 
