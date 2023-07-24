@@ -20,9 +20,13 @@ function App () {
     const [searchCriteria, setSearchCriteria] = useState("");
 
     useEffect(()=>{
-        Database.getMostRecentArticles(3, (dbArticleList) => {
-            setArticleList(dbArticleList);
-        }); }, [] // only when initializing
+            Database.getMostRecentArticles(3, (dbArticleList) => {
+                setArticleList(dbArticleList);
+            });
+            Database.getMostRecentCriteria(1, (criteria) => {
+                setSearchCriteria(criteria.contentPattern);
+            }); 
+        }, [] // only when initializing
     ); 
 
     /* --------------- Search Article
@@ -34,6 +38,8 @@ function App () {
         setSearchModalIsOpen(false);
         var inputCriteria = event.target.searchCriteriaField.value;
         retrieve(inputCriteria);
+        }); 
+
     }
     
     function cancelSearchModal() { setSearchModalIsOpen(false); }
@@ -121,11 +127,14 @@ function App () {
         if (inputCriteria === "") {
             inputCriteria = "WILL-NEVER-EXIST";
         }
-        setSearchCriteria(inputCriteria);
-        console.log("criteria:" + inputCriteria);
-        Database.searchForArticle(inputCriteria, (dbArticleList) => {
-            setArticleList(dbArticleList);
-        });        
+        if (inputCriteria !== searchCriteria) {
+            setSearchCriteria(inputCriteria);
+            console.log("criteria:" + inputCriteria);
+            Database.searchForArticle(inputCriteria, (dbArticleList) => {
+                setArticleList(dbArticleList);
+            });        
+            Database.updateCriteria(searchCriteria);
+        }
     }
 
     function save() {
@@ -142,7 +151,7 @@ function App () {
                         Database.deleteArticle(article.id);
                     }
                     else if (article.status === "modified") {
-
+                        Database.updateArticle(article);
                     }
                     return article;
                 });
@@ -153,7 +162,7 @@ function App () {
                 article.status = "intact"; 
                 return keep; 
             });
-            setArticleList(newArticleList);
+            setArticleList(newArticleList);            
         }
     }
 
