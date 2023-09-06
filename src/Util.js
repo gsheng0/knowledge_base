@@ -1,5 +1,5 @@
 export class Database {
-    
+
     static request(suffix, type, data = undefined, onload = undefined){
         const call = new XMLHttpRequest();
          call.open(type, "http://198.162.1.211:8080/kb/" + suffix);
@@ -28,7 +28,7 @@ export class Database {
     }
 
     /* -------
-       article 
+       article
        ------- */
 
     static getArticle(id, updateFunction){
@@ -89,7 +89,7 @@ export class Database {
     }
 
     /*  ---------------
-        search criteria 
+        search criteria
         --------------- */
 
     static updateCriteria(criteria) {
@@ -103,13 +103,13 @@ export class Database {
     static getMostRecentCriteria(userid, updateFunction){
         Database.request("most-recent-criteria", "POST", userid, (e) => {
             console.log(e.response);
-            let reply = JSON.parse(e.response);        
-            updateFunction(reply);    
+            let reply = JSON.parse(e.response);
+            updateFunction(reply);
         });
     }
 
     /*  -----------
-        label list 
+        label list
         ----------- */
 
     static getLabelList(updateFunction) {
@@ -126,7 +126,7 @@ export class Database {
         let data = JSON.stringify(labelList);
         console.log("stringfied: " +data);
         Database.request("update-label-list", "POST", data, (e) => {
-        })        
+        })
     }
 
     static updateLabel(label) {
@@ -135,7 +135,7 @@ export class Database {
         let data = JSON.stringify(label);
         console.log("stringfied: " + data);
         Database.request("update-label", "POST", data, (e) => {
-        })        
+        })
     }
 
 }

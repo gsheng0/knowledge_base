@@ -15,7 +15,8 @@ function Article (props) {
         props.onArticleEditRequest(props.articleToShow.id);
     }
 
-    console.log("rendering: " + props);
+    console.log("rendering: ");
+    console.log(props);
     return (
         <div className='article' key={props.articleToShow.id}>            
             <Title 

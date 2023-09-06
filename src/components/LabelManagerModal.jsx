@@ -6,13 +6,14 @@ import "../index.css";
 import { useState, useEffect } from "react";
 import { v4 as uuid } from "uuid";
 
-import {Database} from "../Util";
+// import {Database} from "../Util";
+import { KbRepo } from "../KbRepo";
 
 
 function LabelManagerModal(props) {
     const [labelList, setLabelList] = useState([]);
     useEffect(()=>{
-        Database.getLabelList((dbLabelList)=>{ setLabelList(dbLabelList); });
+        KbRepo.getLabelList((dbLabelList)=>{ setLabelList(dbLabelList); });
         // setLabelList([{id: "1", articleLabel: "label one", originalArticleLabel: "label one", status: "intact"}, 
         //               {id: "2", articleLabel: "label two", originalArticleLabel: "label two", status: "intact"}]);
     }, []);
@@ -75,7 +76,7 @@ function LabelManagerModal(props) {
     }
 
     function save() {
-        Database.updateLabelList(labelList, (r)=>{})
+        KbRepo.updateLabelList(labelList, (r)=>{})
         // Database.updateLabel(labelList[0]);        
     }
 
