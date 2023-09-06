@@ -2,13 +2,14 @@ import React from "react";
 import { useState, useEffect } from "react";
 import { v4 as uuid } from "uuid";
 
-import {Database} from "../Util";
+import { KbRepo } from "../KbRepo";
 
 import "../index.css";
 import MenuBar from "./MenuBar";
 import ArticleList from "./ArticleList";
 import EditArticleModal from "./EditArticleModal";
 import SearchCriterialModal from "./SearchCriteriaModal";
+import LabelManagerModal from "./LabelManagerModal";
 
 function App () {
     /* ----------- states and effects
@@ -18,12 +19,13 @@ function App () {
     const [articleModalIsOpen, setArticleModalIsOpen] = useState(false);
     const [article, setArticle] = useState({});
     const [searchCriteria, setSearchCriteria] = useState("");
+    const [labelManagerIsOpen, setLabelManagerIsOpen] = useState(false);
 
     useEffect(()=>{
-            Database.getMostRecentArticles(3, (dbArticleList) => {
+            KbRepo.getMostRecentArticles(3, (dbArticleList) => {
                 setArticleList(dbArticleList);
             });
-            Database.getMostRecentCriteria(1, (criteria) => {
+            KbRepo.getMostRecentCriteria(1, (criteria) => {
                 setSearchCriteria(criteria.contentPattern);
             }); 
         }, [] // only when initializing
@@ -37,9 +39,7 @@ function App () {
         event.preventDefault();
         setSearchModalIsOpen(false);
         var inputCriteria = event.target.searchCriteriaField.value;
-        retrieve(inputCriteria);
-        }); 
-
+        retrieve(inputCriteria);        
     }
     
     function cancelSearchModal() { setSearchModalIsOpen(false); }
@@ -51,7 +51,7 @@ function App () {
         setArticle({   
             id: "",
             title: "",
-            content: "",
+            textContent: "",
             labels: [],
             createOn: datetimestr, 
             updateOn: datetimestr,
@@ -82,7 +82,6 @@ function App () {
     }
     
     function applyArticleModal(event) {
-        console.log("OK from article Modal");
         event.preventDefault();
         var newTitle = event.target.title.value;
         var newContent = event.target.content.value;
@@ -117,7 +116,13 @@ function App () {
 
     /* -------------------- mangaging labels
        -------------------- */
-    function labelAdm() {
+    function labelManager() {
+        setLabelManagerIsOpen(true);
+    
+    }
+
+    function closeLableManager() {
+        setLabelManagerIsOpen(false);
 
     }
 
@@ -130,10 +135,10 @@ function App () {
         if (inputCriteria !== searchCriteria) {
             setSearchCriteria(inputCriteria);
             console.log("criteria:" + inputCriteria);
-            Database.searchForArticle(inputCriteria, (dbArticleList) => {
+            KbRepo.searchForArticle(inputCriteria, (dbArticleList) => {
                 setArticleList(dbArticleList);
             });        
-            Database.updateCriteria(searchCriteria);
+            KbRepo.updateCriteria(inputCriteria);
         }
     }
 
@@ -144,14 +149,14 @@ function App () {
                 .map((article) => {
                     if (article.status === "new") {
                         console.log("inserting " + article.id + " " + article.title + "......");
-                        Database.uploadArticle(article, (rowsUpdated) => { });
+                        KbRepo.uploadArticle(article, (rowsUpdated) => { });
                     }
                     else if (article.status === "deleted") {
                         console.log("deleting " + article.id + " " + article.title + "......");
-                        Database.deleteArticle(article.id);
+                        KbRepo.deleteArticle(article.id);
                     }
                     else if (article.status === "modified") {
-                        Database.updateArticle(article);
+                        KbRepo.updateArticle(article);
                     }
                     return article;
                 });
@@ -178,12 +183,16 @@ function App () {
                 onNew={newArticle}
                 onSave={save}
                 onRevert={revert}
-                onLabel={labelAdm}
+                onLabel={labelManager}
             />
             <ArticleList 
                 articleListToShow={articleList} 
                 onArticleEdit={editArticle}
                 onArticleDelete={deleteArticle}
+            />
+            <LabelManagerModal 
+                popup={labelManagerIsOpen}                     
+                onClose={closeLableManager}
             />
             <SearchCriterialModal  
                 popup={searchModalIsOpen}

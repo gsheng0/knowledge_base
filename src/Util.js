@@ -1,10 +1,10 @@
 export class Database {
+    
     static request(suffix, type, data = undefined, onload = undefined){
         const call = new XMLHttpRequest();
-//         call.open(type, "http://kbase-service.gsheng.me/" + suffix);
-         call.open(type, "http://localhost:8080/kb/" + suffix);
+         call.open(type, "http://198.162.1.211:8080/kb/" + suffix);
         //  call.open(type, "http://gsheng-me:8443/kb/" + suffix);
-//         call.open(type, "https://service.gsheng.me:8443/kb/" + suffix);
+        //  call.open(type, "https://service.gsheng.me:8443/kb/" + suffix);
         call.setRequestHeader('Content-Type', 'application/json');
         if(data !== undefined){
             call.send(data);
@@ -27,29 +27,16 @@ export class Database {
         });
     }
 
+    /* -------
+       article 
+       ------- */
+
     static getArticle(id, updateFunction){
         Database.request("get", "POST", id, (e) => {
             let reply = JSON.parse(e.response);
             updateFunction(reply);
             console.log(reply);
         });
-    }
-
-    static uploadArticle(article, onCompleteFunction){
-        let data = JSON.stringify(article);
-        Database.request("upload", "POST", data, (e) => {
-            let reply = JSON.parse(e.response);
-            onCompleteFunction(reply);
-            console.log(reply);
-        })
-    }
-
-    static updateArticle(article){
-        let data = JSON.stringify({id: article.id, title: article.title, content: article.content, date: article.date});
-        Database.request("update-article", "POST", data, (e) => {
-            let reply = JSON.parse(e.response);
-            console.log(reply);
-        })
     }
 
     static getAllArticles(updateFunction){ 
@@ -84,6 +71,27 @@ export class Database {
         })
     }
 
+    static uploadArticle(article, onCompleteFunction){
+        let data = JSON.stringify(article);
+        Database.request("upload", "POST", data, (e) => {
+            let reply = JSON.parse(e.response);
+            onCompleteFunction(reply);
+            console.log(reply);
+        })
+    }
+
+    static updateArticle(article){
+        let data = JSON.stringify({id: article.id, title: article.title, content: article.content, date: article.date});
+        Database.request("update-article", "POST", data, (e) => {
+            let reply = JSON.parse(e.response);
+            console.log(reply);
+        })
+    }
+
+    /*  ---------------
+        search criteria 
+        --------------- */
+
     static updateCriteria(criteria) {
         console.log("updating criteria: " + criteria);
         Database.request("update-criteria", "POST", criteria, (e) => {
@@ -99,6 +107,37 @@ export class Database {
             updateFunction(reply);    
         });
     }
+
+    /*  -----------
+        label list 
+        ----------- */
+
+    static getLabelList(updateFunction) {
+        Database.request("label-list", "GET", (e) => {
+            console.log(e.response);
+            let reply = JSON.parse(e.response);
+            updateFunction(reply);
+        })
+    }
+
+    static updateLabelList(labelList) {
+        console.log("updating label list: ")
+        console.log(labelList);
+        let data = JSON.stringify(labelList);
+        console.log("stringfied: " +data);
+        Database.request("update-label-list", "POST", data, (e) => {
+        })        
+    }
+
+    static updateLabel(label) {
+        console.log("updating label: ")
+        console.log(label);
+        let data = JSON.stringify(label);
+        console.log("stringfied: " + data);
+        Database.request("update-label", "POST", data, (e) => {
+        })        
+    }
+
 }
 
 export class General{
