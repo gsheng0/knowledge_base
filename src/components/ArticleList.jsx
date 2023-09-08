@@ -3,7 +3,10 @@ import React from "react";
 import Article from "./Article";
 import "../index.css";
 
+
 function ArticleList (props) {
+    console.log("Article List rendering: ");
+    console.log(props);
     return (
         <div className="AticleList">
         { 

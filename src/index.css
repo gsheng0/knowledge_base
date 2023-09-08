@@ -46,8 +46,11 @@ body {
 }
 
 .label {
-    background: #fef;    
-    max-width: 50px;
+    background: #eff;    
+    border-radius: 1rem;
+    padding: 1rem;
+    text-align: left;
+    max-width: 200px;    
 }
 
 .timeStamps {

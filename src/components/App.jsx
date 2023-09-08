@@ -5,21 +5,28 @@ import { v4 as uuid } from "uuid";
 import { KbRepo } from "../KbRepo";
 
 import "../index.css";
-import MenuBar from "./MenuBar";
+import {ARTICLES, MenuBar} from "./MenuBar";
 import ArticleList from "./ArticleList";
+import LabelList from "./LabelList";
 import EditArticleModal from "./EditArticleModal";
 import SearchCriterialModal from "./SearchCriteriaModal";
-import LabelManagerModal from "./LabelManagerModal";
+import EditLabelModal from "./EditLabelModal";
 
 function App () {
     /* ----------- states and effects
        ----------- */
-    const [articleList, setArticleList] = useState([]);
-    const [searchModalIsOpen, setSearchModalIsOpen] = useState(false);
+    const [mainScreen, setMainScreen] = useState(ARTICLES)
+
+    const [articleList, setArticleList] = useState([]);   
     const [articleModalIsOpen, setArticleModalIsOpen] = useState(false);
     const [article, setArticle] = useState({});
+
     const [searchCriteria, setSearchCriteria] = useState("");
-    const [labelManagerIsOpen, setLabelManagerIsOpen] = useState(false);
+    const [searchModalIsOpen, setSearchModalIsOpen] = useState(false);
+
+    const [labelList, setLabelList] = useState([]);
+    const [labelModalIsOpen, setLabelModalIsOpen] = useState(false);
+    const [label, setLabel] = useState({});
 
     useEffect(()=>{
             KbRepo.getMostRecentArticles(3, (dbArticleList) => {
@@ -28,24 +35,23 @@ function App () {
             KbRepo.getMostRecentCriteria(1, (criteria) => {
                 setSearchCriteria(criteria.contentPattern);
             }); 
+            KbRepo.getLabelList((dbLabelList)=>{ 
+                setLabelList(dbLabelList); 
+            });
         }, [] // only when initializing
     ); 
 
-    /* --------------- Search Article
-       --------------- */
-    function searchArticle() { setSearchModalIsOpen(true); }
-
-    function applySearchModal(event) {
+    /* --- main screen 
+       ---------------- */
+    function changeMainScreen(event) {
         event.preventDefault();
-        setSearchModalIsOpen(false);
-        var inputCriteria = event.target.searchCriteriaField.value;
-        retrieve(inputCriteria);        
+        const pickedScreen = event.target.value;
+        setMainScreen(pickedScreen);
+        console.log("picked: " + pickedScreen);
     }
-    
-    function cancelSearchModal() { setSearchModalIsOpen(false); }
 
-    /* --------------- create Article
-       --------------- */
+    /* --- create Article
+       ------------------ */
     function newArticle() {
         var datetimestr = new Date().toISOString();
         setArticle({   
@@ -114,21 +120,86 @@ function App () {
         console.log("cancel from article Modal");
     }
 
-    /* -------------------- mangaging labels
-       -------------------- */
-    function labelManager() {
-        setLabelManagerIsOpen(true);
+    /* --- Search Article
+       ------------------ */
+    function searchArticle() { setSearchModalIsOpen(true); }
+
+    function applySearchModal(event) {
+        event.preventDefault();
+        setSearchModalIsOpen(false);
+        var inputCriteria = event.target.searchCriteriaField.value;
+        retrieveArticles(inputCriteria);        
+    }
     
+    function cancelSearchModal() { setSearchModalIsOpen(false); }
+   
+    /* ------ create labels
+       -------------------- */
+    function newLabel() {
+        setLabel({   
+            id: "",
+            articleLabel: "",
+            originalArticleLable: "",
+            status: "new" 
+        });
+        setLabelModalIsOpen(true);
     }
 
-    function closeLableManager() {
-        setLabelManagerIsOpen(false);
+    function editLabel(id) {       
+        labelList.forEach((label)=>{
+            if (label.id === id) {
+                setLabel(label);
+            }
+        })
+        setLabelModalIsOpen(true);
+    }
 
+    function deleteLabel(id) {
+        console.log("deleting label: " + id);
+        var leftLabelList = 
+                labelList.map((label)=>{ 
+                    if (label.id === id) {
+                        label.status = "deleted"; 
+                    }
+                    return label;
+                });
+        setLabelList(leftLabelList);
+    }
+
+    function applyLabelModal(event) {
+        event.preventDefault();
+        var newId = event.target.id.value;
+        var newArticleLabel = event.target.title.value;
+        if (newArticleLabel === "") {
+            console.log("Article label can't be empty!");
+            return;
+        } else {
+            if (newId === "") {
+                var labelToCreate = {...label, id: uuid(), articleLabel: newArticleLabel};
+                setLabel(labelToCreate);
+                setLabelList(prevalue => { return [labelToCreate, ...prevalue]; }); 
+            } else { // modify existing
+                var newLabelList = labelList.map((label)=>{
+                    if (label.id === newId) {
+                        label.newArticleLabel = newArticleLabel;
+                        label.status = "modified";
+                    }
+                    return label; 
+                });
+                setLabelList(newLabelList);
+            }
+            setLabelModalIsOpen(false);
+        }
+    }
+
+    function cancelLabelModal() {
+        setLabelModalIsOpen(false);
+        console.log("cancel from label Modal");
     }
 
     /* ------- db 
        ------- */
-    function retrieve(inputCriteria) {
+    function retrieveArticles(inputCriteria) {
         if (inputCriteria === "") {
             inputCriteria = "WILL-NEVER-EXIST";
         }
@@ -142,7 +213,7 @@ function App () {
         }
     }
 
-    function save() {
+    function saveArticleChanges() {
         var savedArticleList = 
             articleList
                 .filter((article)=>{ return article.status !== "intact" })
@@ -171,29 +242,82 @@ function App () {
         }
     }
 
-    function revert() {
+    function revertArticle() {
         console.log("revert changes pressed.");
-        retrieve(searchCriteria);
+        retrieveArticles(searchCriteria);
     }
 
+    function retrieveLabels() {
+        KbRepo.getLabelList((dbLabelList) => {
+            setLabelList(dbLabelList);
+        });                
+    }
+
+    function saveLabelChanges() {
+        var savedLabelList = 
+            labelList
+                .filter((label)=>{ return label.status !== "intact" })
+                .map((label) => {
+                    if (label.status === "new") {
+                        console.log("inserting " + label.id + " " + label.articleLable + "......");
+                        KbRepo.uploadLabel(label, (rowsUpdated) => { });
+                    }
+                    else if (label.status === "deleted") {
+                        console.log("deleting " + label.id + " " + label.articleLabel + "......");
+                        // KbRepo.deleteLabel(label.id);
+                    }
+                    else if (label.status === "modified") {
+                        KbRepo.updateLabel(label);
+                    }
+                    return label;
+                });
+        if (savedLabelList.length !== 0) {
+            var newLabelList = 
+                labelList.filter((label)=>{ 
+                    var keep = (label.status !== "deleted") ;
+                    label.status = "intact"; 
+                    return keep; 
+                });
+            setLabelList(newLabelList);            
+        }
+    }
+
+    function revertLabel() {
+        console.log("revert changes pressed.");
+        retrieveLabels();
+    }
+
+
+    /* -------------  HTML
+       ------------------- */
     return (
         <div id="App">
-            <MenuBar 
-                onSearch={searchArticle}
-                onNew={newArticle}
-                onSave={save}
-                onRevert={revert}
-                onLabel={labelManager}
+            <MenuBar
+                selectedScreen={mainScreen}
+                onMainScreenChange={changeMainScreen}
+                onSearchArticle={searchArticle}
+                onNewArticle={newArticle}
+                onSaveArticleChanges={saveArticleChanges}
+                onRevertArticle={revertArticle}
+                onNewLabel={newLabel}
+                onSaveLabelChanges={saveLabelChanges}
+                onRevertLabel={revertLabel}
             />
-            <ArticleList 
-                articleListToShow={articleList} 
-                onArticleEdit={editArticle}
-                onArticleDelete={deleteArticle}
-            />
-            <LabelManagerModal 
-                popup={labelManagerIsOpen}                     
-                onClose={closeLableManager}
-            />
+            {
+                mainScreen === ARTICLES
+                ?
+                    <ArticleList 
+                        articleListToShow={articleList} 
+                        onArticleEdit={editArticle}
+                        onArticleDelete={deleteArticle}
+                    />
+                :
+                    <LabelList 
+                        labelList={labelList} 
+                        onLabelEdit={editLabel}
+                        onLabelDelete={deleteLabel}
+                    />
+            }
             <SearchCriterialModal  
                 popup={searchModalIsOpen}
                 onSubmit={applySearchModal}
@@ -206,8 +330,14 @@ function App () {
                 onCancel={cancelArticleModal}
                 articleToEdit={article}
             />
+            <EditLabelModal 
+                popup={labelModalIsOpen}                     
+                onSubmit={applyLabelModal}
+                onCancel={cancelLabelModal}
+                labelToEdit={label}
+            />
         </div> 
     ) ;
-};
+}
 
 export default App;

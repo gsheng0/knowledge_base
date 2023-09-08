@@ -2,21 +2,50 @@ import React from "react";
 
 import "../index.css";
 
-function MenuBar (props) {
+export const ARTICLES = "Notes";
+export const LABLES = "Lables";
+const screenOptions = [ARTICLES, LABLES];
+
+function screenSelection(selectedScreen, onChangeFunction) {
     return (
-        <div>
-            <button onClick={props.onSearch}><h3>Search Article</h3>
-                </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <button onClick={props.onNew}><h3>New Article</h3>
-                </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <button onClick={props.onSave}><h3>Save Change</h3>
-                </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <button onClick={props.onRevert}><h3>Revert Change</h3>
-                </button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <button onClick={props.onLabel}><h3>Manable Labels</h3>
-                </button>
-        </div>
+        <select value={selectedScreen} onChange={onChangeFunction} 
+                style={{fontSize: '26px'}}
+        >
+            {   screenOptions.map(screen => { 
+                    return <option key={screen} value={screen}>{screen}</option>; 
+                })
+            }
+        </select>
     );
 }
 
-export default MenuBar;
+export function MenuBar (props) {
+    return (    
+        (props.selectedScreen === ARTICLES) 
+        ?
+            <div>
+                {screenSelection(props.selectedScreen, props.onMainScreenChange)}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button onClick={props.onSearchArticle}><h3>Search</h3>
+                    </button>&nbsp;&nbsp;&nbsp;
+                <button onClick={props.onNewArticle}><h3>New</h3>
+                    </button>&nbsp;&nbsp;&nbsp;
+                <button onClick={props.onSaveArticleChanges}><h3>Save</h3>
+                    </button>&nbsp;&nbsp;&nbsp;
+                <button onClick={props.onRevertArticle}><h3>Revert</h3>
+                    </button>&nbsp;&nbsp;&nbsp;
+            </div>
+        :
+            <div>
+                {screenSelection(props.selectedScreen, props.onMainScreenChange)}
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <button onClick={props.onNewLabel}><h3>New</h3>
+                    </button>&nbsp;&nbsp;&nbsp;
+                <button onClick={props.onSaveLabelChanges}><h3>Save</h3>
+                    </button>&nbsp;&nbsp;&nbsp;
+                <button onClick={props.onRevertLabel}><h3>Revert</h3>
+                    </button>&nbsp;&nbsp;&nbsp;
+            </div>
+    );
+}
+
