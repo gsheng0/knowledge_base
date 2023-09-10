@@ -1,4 +1,3 @@
-import React from "react";
 import "../index.css";
 
 import Title from "./Title";
@@ -15,8 +14,6 @@ function Article (props) {
         props.onArticleEditRequest(props.articleToShow.id);
     }
 
-    // console.log("Article rendering: ");
-    // console.log(props);
     return (
         <div className='article' key={props.articleToShow.id}>            
             <Title 

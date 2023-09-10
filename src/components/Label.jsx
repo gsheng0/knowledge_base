@@ -2,13 +2,14 @@ import React from "react";
 import "../index.css";
 
 function Label (props) {
+
     function handleDelete() {
-        console.log('delete lable');
+        console.log('[Label] delete label');
         props.onLabelDeleteRequest(props.label.id);
     }
 
     function handleEdit() {
-        console.log('edit lable');
+        console.log('[Label] edit label');
         props.onLabelEditRequest(props.label.id);
     }
 
@@ -17,8 +18,8 @@ function Label (props) {
             <h4><b>{props.label.articleLabel} - {props.label.status}</b></h4>            
             <button onClick={handleEdit}>edit</button>&nbsp;&nbsp;
             <button onClick={handleDelete}>delete</button>    
-        </div>
-    )
+        </div>        
+    );
 }
 
 export default Label;

@@ -3,8 +3,8 @@ import React from "react";
 import "../index.css";
 
 export const ARTICLES = "Notes";
-export const LABLES = "Lables";
-const screenOptions = [ARTICLES, LABLES];
+export const LABELS = "Labels";
+const screenOptions = [ARTICLES, LABELS];
 
 function screenSelection(selectedScreen, onChangeFunction) {
     return (

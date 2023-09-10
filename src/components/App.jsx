@@ -28,6 +28,14 @@ function App () {
     const [labelModalIsOpen, setLabelModalIsOpen] = useState(false);
     const [label, setLabel] = useState({});
 
+    const [labelOptionList, setLabelOptionList] = useState([]);
+
+    function createLabelOptionListFromLabelList (articleLabelList) {
+        return articleLabelList.map((e) => {
+            return { value: e.id, label: e.articleLabel}
+        });
+    }
+
     useEffect(()=>{
             KbRepo.getMostRecentArticles(3, (dbArticleList) => {
                 setArticleList(dbArticleList);
@@ -36,7 +44,10 @@ function App () {
                 setSearchCriteria(criteria.contentPattern);
             }); 
             KbRepo.getLabelList((dbLabelList)=>{ 
+                console.log("[App] setting label list: ");
+                console.log(dbLabelList);
                 setLabelList(dbLabelList); 
+                setLabelOptionList(createLabelOptionListFromLabelList(dbLabelList));
             });
         }, [] // only when initializing
     ); 
@@ -47,7 +58,7 @@ function App () {
         event.preventDefault();
         const pickedScreen = event.target.value;
         setMainScreen(pickedScreen);
-        console.log("picked: " + pickedScreen);
+        console.log("[App]: picked: " + pickedScreen);
     }
 
     /* --- create Article
@@ -76,7 +87,7 @@ function App () {
     }
 
     function deleteArticle(id) {
-        console.log("deleting: " + id);
+        console.log("[App]: deleting: " + id);
         var leftArticleList = 
         articleList.map((article)=>{ 
             if (article.id === id) {
@@ -89,25 +100,37 @@ function App () {
     
     function applyArticleModal(event) {
         event.preventDefault();
-        var newTitle = event.target.title.value;
-        var newContent = event.target.content.value;
-        var newId = event.target.id.value;
-        if (newTitle === "" || newContent === "") {
-            console.log("title or content can't be empty!");
+        var modalId = event.target.id.value;
+        var modalTitle = event.target.title.value;
+        var modalContent = event.target.content.value;
+        var modalSelectedLabels = [];
+        const labels = event.target.labels;
+        for (var i=0; i<labels.length; i++) {
+            modalSelectedLabels.push(labels[i].value);
+        }        
+        console.log("[App] applyArticleModel: ");
+        console.log({title: modalTitle, content: modalContent, labels: modalSelectedLabels});
+        if (modalTitle === "" || modalContent === "") {
+            console.log("[App]: title or content can't be empty!");
             return;
         } else {
-            if (newId === "") {
-                var articleToCreate = {...article, id: uuid(), title: newTitle, content: newContent};
+            if (modalId === "") {
+                var articleToCreate = {...article, id: uuid(), title: modalTitle, content: modalContent, labels: modalSelectedLabels};
+                console.log("[App] new article:");
+                console.log(articleToCreate);
                 setArticle(articleToCreate);
                 setArticleList(prevalue => { return [articleToCreate, ...prevalue]; }); 
             } else { // modify existing
-                var newArticleList = articleList.map((article)=>{
-                    if (article.id === newId) {
-                        article.title = newTitle;
-                        article.content = newContent;
-                        article.status = "modified";
+                var newArticleList = articleList.map((articleToModify)=>{
+                    if (articleToModify.id === modalId) {                        
+                        articleToModify.title = modalTitle;
+                        articleToModify.content = modalContent;
+                        articleToModify.labels = modalSelectedLabels;
+                        articleToModify.status = "modified";
                     }
-                    return article; 
+                    console.log("[App] modified article:");
+                    console.log(articleToModify);
+                    return articleToModify; 
                 });
                 setArticleList(newArticleList);
             }
@@ -117,7 +140,7 @@ function App () {
 
     function cancelArticleModal() {
         setArticleModalIsOpen(false);
-        console.log("cancel from article Modal");
+        console.log("[App]: cancel from article Modal");
     }
 
     /* --- Search Article
@@ -155,7 +178,7 @@ function App () {
     }
 
     function deleteLabel(id) {
-        console.log("deleting label: " + id);
+        console.log("[App]: deleting label: " + id);
         var leftLabelList = 
                 labelList.map((label)=>{ 
                     if (label.id === id) {
@@ -168,20 +191,20 @@ function App () {
 
     function applyLabelModal(event) {
         event.preventDefault();
-        var newId = event.target.id.value;
-        var newArticleLabel = event.target.title.value;
-        if (newArticleLabel === "") {
-            console.log("Article label can't be empty!");
+        var modalId = event.target.id.value;
+        var modalArticleLabel = event.target.articleLabel.value;
+        if (modalArticleLabel === "") {
+            console.log("[App]: Article label can't be empty!");
             return;
         } else {
-            if (newId === "") {
-                var labelToCreate = {...label, id: uuid(), articleLabel: newArticleLabel};
+            if (modalId === "") {
+                var labelToCreate = {...label, id: uuid(), articleLabel: modalArticleLabel};
                 setLabel(labelToCreate);
                 setLabelList(prevalue => { return [labelToCreate, ...prevalue]; }); 
             } else { // modify existing
                 var newLabelList = labelList.map((label)=>{
-                    if (label.id === newId) {
-                        label.newArticleLabel = newArticleLabel;
+                    if (label.id === modalId) {
+                        label.articleLabel = modalArticleLabel;
                         label.status = "modified";
                     }
                     return label; 
@@ -194,7 +217,7 @@ function App () {
 
     function cancelLabelModal() {
         setLabelModalIsOpen(false);
-        console.log("cancel from label Modal");
+        console.log("[App]: cancel from label Modal");
     }
 
     /* ------- db 
@@ -205,7 +228,7 @@ function App () {
         }
         if (inputCriteria !== searchCriteria) {
             setSearchCriteria(inputCriteria);
-            console.log("criteria:" + inputCriteria);
+            console.log("[App]: criteria:" + inputCriteria);
             KbRepo.searchForArticle(inputCriteria, (dbArticleList) => {
                 setArticleList(dbArticleList);
             });        
@@ -219,11 +242,11 @@ function App () {
                 .filter((article)=>{ return article.status !== "intact" })
                 .map((article) => {
                     if (article.status === "new") {
-                        console.log("inserting " + article.id + " " + article.title + "......");
+                        console.log("[App]: inserting " + article.id + " " + article.title + "......");
                         KbRepo.uploadArticle(article, (rowsUpdated) => { });
                     }
                     else if (article.status === "deleted") {
-                        console.log("deleting " + article.id + " " + article.title + "......");
+                        console.log("[App]: deleting " + article.id + " " + article.title + "......");
                         KbRepo.deleteArticle(article.id);
                     }
                     else if (article.status === "modified") {
@@ -243,7 +266,7 @@ function App () {
     }
 
     function revertArticle() {
-        console.log("revert changes pressed.");
+        console.log("[App]: revert changes pressed.");
         retrieveArticles(searchCriteria);
     }
 
@@ -254,19 +277,21 @@ function App () {
     }
 
     function saveLabelChanges() {
+        console.log("[App]: Saving labels......");
         var savedLabelList = 
             labelList
                 .filter((label)=>{ return label.status !== "intact" })
                 .map((label) => {
                     if (label.status === "new") {
-                        console.log("inserting " + label.id + " " + label.articleLable + "......");
-                        KbRepo.uploadLabel(label, (rowsUpdated) => { });
+                        console.log("[App]: inserting " + label.id + " " + label.articleLable + "......");
+                        KbRepo.updateLabel(label, (rowsUpdated) => { });
                     }
                     else if (label.status === "deleted") {
-                        console.log("deleting " + label.id + " " + label.articleLabel + "......");
+                        console.log("[App]: deleting " + label.id + " " + label.articleLabel + "......");
                         // KbRepo.deleteLabel(label.id);
                     }
                     else if (label.status === "modified") {
+                        console.log("[App]: modified " + label.id + " " + label.articleLabel + "......");
                         KbRepo.updateLabel(label);
                     }
                     return label;
@@ -279,11 +304,12 @@ function App () {
                     return keep; 
                 });
             setLabelList(newLabelList);            
+            setLabelOptionList(createLabelOptionListFromLabelList(labelList));
         }
     }
 
     function revertLabel() {
-        console.log("revert changes pressed.");
+        console.log("[App]: revert changes pressed.");
         retrieveLabels();
     }
 
@@ -313,6 +339,7 @@ function App () {
                     />
                 :
                     <LabelList 
+                        currMainScreen={mainScreen}
                         labelList={labelList} 
                         onLabelEdit={editLabel}
                         onLabelDelete={deleteLabel}
@@ -326,15 +353,16 @@ function App () {
             />
             <EditArticleModal
                 popup={articleModalIsOpen}
+                articleToEdit={article}
+                labelOptionList={labelOptionList}
                 onSubmit={applyArticleModal}
                 onCancel={cancelArticleModal}
-                articleToEdit={article}
             />
             <EditLabelModal 
-                popup={labelModalIsOpen}                     
+                popup={labelModalIsOpen}   
+                labelToEdit={label}
                 onSubmit={applyLabelModal}
                 onCancel={cancelLabelModal}
-                labelToEdit={label}
             />
         </div> 
     ) ;
