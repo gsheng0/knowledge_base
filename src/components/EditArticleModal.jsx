@@ -8,8 +8,8 @@ function EditArticleModal(props) {
     const [selectedLabels, setSelectedLabels] = useState(createSelectedLabels(props));
 
     function createSelectedLabels(props) {
-        if (props.articleToShow && props.articleToShow.labels) {
-            const labels =  props.articleToShow.labels.map((labelId) => { 
+        if (props.articleToEdit && props.articleToEdit.labels) {
+            const labels =  props.articleToEdit.labels.map((labelId) => { 
                 for (var i=0; i<props.labelOptionList.length; i++) {
                     if (props.labelOptionList[i].value === labelId) {
                         return {value: labelId, label: props.labelOptionList[i].label}; 
@@ -23,7 +23,11 @@ function EditArticleModal(props) {
     }
 
     useEffect(()=>{
-        setSelectedLabels(createSelectedLabels(props));
+        // debugger
+        const currSelectedLabels = createSelectedLabels(props);
+        console.log("[EditArticleModal] useEffect setSelctedLabels");
+        console.log(currSelectedLabels);
+        setSelectedLabels(currSelectedLabels);
     }, [props.articleToEdit]);
 
     function onMultiLableSelectorChange(data) {
@@ -32,8 +36,6 @@ function EditArticleModal(props) {
         setSelectedLabels(data);
     }
     
-    // const currSelectedLabels = createSelectedLabels(props.articleToEdit);
-    // setSelectedLabels(currSelectedLabels);
     console.log("[EditArticleModal] rendering article editor: ");
     console.log( props.articleToEdit);
     console.log(selectedLabels);
@@ -51,8 +53,8 @@ function EditArticleModal(props) {
                     <label>TITLE &nbsp;&nbsp;&nbsp;&nbsp;</label>
                         <input name="title" type="text" placeholder="Title" 
                             defaultValue={props.articleToEdit.title}/><br /><br />
-                    <textarea name="content" placeholder="content" rows={20} cols={100} 
-                            defaultValue={props.articleToEdit.content}/><br />
+                    <textarea name="textContent" placeholder="content" rows={20} cols={100} 
+                            defaultValue={props.articleToEdit.textContent}/><br />
                     <Select 
                         name="labels"
                         options={props.labelOptionList}
