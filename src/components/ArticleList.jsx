@@ -7,6 +7,7 @@ import "../index.css";
 function ArticleList (props) {
     console.log("[ArticleList] rendering: ");
     console.log(props);
+
     return (
         <div className="AticleList">
         { 
@@ -14,6 +15,7 @@ function ArticleList (props) {
                 return (
                     <Article 
                         key={article.id}
+                        labelOptionList={props.labelOptionList}
                         articleToShow={article}
                         onArticleDeleteRequest={props.onArticleDelete}
                         onArticleEditRequest={props.onArticleEdit}

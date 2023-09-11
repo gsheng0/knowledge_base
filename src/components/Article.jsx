@@ -1,9 +1,9 @@
 import "../index.css";
 
 import Title from "./Title";
-import LabelList from "./LabelList";
 import Timestamps from "./Timestamps";
 import Content from "./Content";
+import ArticleLabelList from "./ArticleLabelList";
 
 function Article (props) {
     function handleDelete() {
@@ -14,6 +14,21 @@ function Article (props) {
         props.onArticleEditRequest(props.articleToShow.id);
     }
 
+    function createSelectedLabels(props) {
+        if (props.articleToShow && props.articleToShow.labels) {
+            const labels =  props.articleToShow.labels.map((labelId) => { 
+                for (var i=0; i<props.labelOptionList.length; i++) {
+                    if (props.labelOptionList[i].value === labelId) {
+                        return {value: labelId, label: props.labelOptionList[i].label}; 
+                    }
+                }
+                return [];
+            }); 
+            return labels;
+        }
+        return [];
+    }
+
     return (
         <div className='article' key={props.articleToShow.id}>            
             <Title 
@@ -21,7 +36,7 @@ function Article (props) {
                 id={props.articleToShow.id} 
                 status={props.articleToShow.status}                     
             />
-            <LabelList labelList={props.articleToShow.labels} />
+            <ArticleLabelList labelList={createSelectedLabels(props)} />    
             <Timestamps 
                 createOn={props.articleToShow.createOn} 
                 updateOn={props.articleToShow.updateOn}                     

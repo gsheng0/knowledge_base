@@ -13,9 +13,11 @@ function Label (props) {
         props.onLabelEditRequest(props.label.id);
     }
 
+    console.log("[Label] id: " + props.label.id);
     return (
         <div className="label" key={props.label.id} >
-            <h4><b>{props.label.articleLabel} - {props.label.status}</b></h4>            
+            <h4><b>{props.label.articleLabel}</b></h4>
+            ({props.label.id}), [{props.label.status}] &nbsp;&nbsp;
             <button onClick={handleEdit}>edit</button>&nbsp;&nbsp;
             <button onClick={handleDelete}>delete</button>    
         </div>        

@@ -16,9 +16,9 @@ function SearchCriterialModal(props) {
                         placeholder="search critria" 
                         defaultValue={props.criteria}
                     /> <br />
-                    <button onClick={props.onCancel}>Cancel</button>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     <button>Apply</button>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button onClick={props.onCancel}>Cancel</button>
                 </form>
             </Modal>
         </div>

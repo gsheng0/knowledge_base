@@ -1,6 +1,5 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { v4 as uuid } from "uuid";
 
 import { KbRepo } from "../KbRepo";
 
@@ -104,9 +103,9 @@ function App () {
         var modalTitle = event.target.title.value;
         var modalContent = event.target.content.value;
         var modalSelectedLabels = [];
-        const labels = event.target.labels;
-        for (var i=0; i<labels.length; i++) {
-            modalSelectedLabels.push(labels[i].value);
+        const modalLabels = event.target.labels;
+        for (var i=0; i<modalLabels.length; i++) {
+            modalSelectedLabels.push(modalLabels[i].value);
         }        
         console.log("[App] applyArticleModel: ");
         console.log({title: modalTitle, content: modalContent, labels: modalSelectedLabels});
@@ -115,11 +114,13 @@ function App () {
             return;
         } else {
             if (modalId === "") {
-                var articleToCreate = {...article, id: uuid(), title: modalTitle, content: modalContent, labels: modalSelectedLabels};
-                console.log("[App] new article:");
-                console.log(articleToCreate);
-                setArticle(articleToCreate);
-                setArticleList(prevalue => { return [articleToCreate, ...prevalue]; }); 
+                KbRepo.uuid("article", (newArticleId) => {
+                    var articleToCreate = {...article, id: newArticleId, title: modalTitle, content: modalContent, labels: modalSelectedLabels};
+                    console.log("[App] new article:");
+                    console.log(articleToCreate);
+                    setArticle(articleToCreate);
+                    setArticleList(prevalue => { return [articleToCreate, ...prevalue]; });     
+                });
             } else { // modify existing
                 var newArticleList = articleList.map((articleToModify)=>{
                     if (articleToModify.id === modalId) {                        
@@ -189,19 +190,41 @@ function App () {
         setLabelList(leftLabelList);
     }
 
+    function getArticleLabelId(articleLabel) {
+        for (var i = 0; i<labelList.length; i++) {
+            if (labelList[i].articleLabel === articleLabel) {
+                return labelList[i].id;
+            }
+        }
+        return null;
+    }
+
     function applyLabelModal(event) {
         event.preventDefault();
         var modalId = event.target.id.value;
-        var modalArticleLabel = event.target.articleLabel.value;
+        var modalArticleLabel = event.target.articleLabel.value;        
         if (modalArticleLabel === "") {
             console.log("[App]: Article label can't be empty!");
             return;
         } else {
             if (modalId === "") {
-                var labelToCreate = {...label, id: uuid(), articleLabel: modalArticleLabel};
-                setLabel(labelToCreate);
-                setLabelList(prevalue => { return [labelToCreate, ...prevalue]; }); 
+                if (getArticleLabelId(modalArticleLabel)) {
+                    alert("label " + modalArticleLabel + " already exists!");
+                    return;
+                }
+                KbRepo.uuid("label", (idFromDB) => {
+                    const labelToCreate = {...label, id: idFromDB, articleLabel: modalArticleLabel};
+                    console.log("[App] applyLableModel new-label:");
+                    console.log(labelToCreate);
+                    setLabel(labelToCreate);
+                    setLabelList(prevalue => { return [labelToCreate, ...prevalue]; }); 
+                }) ;
             } else { // modify existing
+                const existingLabelId = getArticleLabelId(modalArticleLabel);
+                if (existingLabelId && existingLabelId !== modalId) {
+                    alert("label " + modalArticleLabel + " already exists!");
+                    return;
+                }
                 var newLabelList = labelList.map((label)=>{
                     if (label.id === modalId) {
                         label.articleLabel = modalArticleLabel;
@@ -224,7 +247,8 @@ function App () {
        ------- */
     function retrieveArticles(inputCriteria) {
         if (inputCriteria === "") {
-            inputCriteria = "WILL-NEVER-EXIST";
+            // inputCriteria = "WILL-NEVER-EXIST";
+            inputCriteria = " ";
         }
         if (inputCriteria !== searchCriteria) {
             setSearchCriteria(inputCriteria);
@@ -237,32 +261,17 @@ function App () {
     }
 
     function saveArticleChanges() {
-        var savedArticleList = 
-            articleList
-                .filter((article)=>{ return article.status !== "intact" })
-                .map((article) => {
-                    if (article.status === "new") {
-                        console.log("[App]: inserting " + article.id + " " + article.title + "......");
-                        KbRepo.uploadArticle(article, (rowsUpdated) => { });
-                    }
-                    else if (article.status === "deleted") {
-                        console.log("[App]: deleting " + article.id + " " + article.title + "......");
-                        KbRepo.deleteArticle(article.id);
-                    }
-                    else if (article.status === "modified") {
-                        KbRepo.updateArticle(article);
-                    }
-                    return article;
-                });
-        if (savedArticleList.length !== 0) {
-            var newArticleList = 
-            articleList.filter((article)=>{ 
-                var keep = (article.status !== "deleted") ;
-                article.status = "intact"; 
-                return keep; 
-            });
+        console.log("[App]: Saving articles......");
+        const listToSave = articleList.filter((article) => article.status !== "deleted");        
+        KbRepo.updateArticleList(listToSave, () => {
+            console.log("[App] saved.")
+            const newArticleList = listToSave.map((article) => {
+                article.status = "intact";
+                return article;
+            }) 
             setArticleList(newArticleList);            
-        }
+            setLabelOptionList(createLabelOptionListFromLabelList(newArticleList));
+        });
     }
 
     function revertArticle() {
@@ -278,34 +287,16 @@ function App () {
 
     function saveLabelChanges() {
         console.log("[App]: Saving labels......");
-        var savedLabelList = 
-            labelList
-                .filter((label)=>{ return label.status !== "intact" })
-                .map((label) => {
-                    if (label.status === "new") {
-                        console.log("[App]: inserting " + label.id + " " + label.articleLable + "......");
-                        KbRepo.updateLabel(label, (rowsUpdated) => { });
-                    }
-                    else if (label.status === "deleted") {
-                        console.log("[App]: deleting " + label.id + " " + label.articleLabel + "......");
-                        // KbRepo.deleteLabel(label.id);
-                    }
-                    else if (label.status === "modified") {
-                        console.log("[App]: modified " + label.id + " " + label.articleLabel + "......");
-                        KbRepo.updateLabel(label);
-                    }
-                    return label;
-                });
-        if (savedLabelList.length !== 0) {
-            var newLabelList = 
-                labelList.filter((label)=>{ 
-                    var keep = (label.status !== "deleted") ;
-                    label.status = "intact"; 
-                    return keep; 
-                });
+        const listToSave = labelList.filter((label) => label.status !== "deleted");        
+        KbRepo.updateLabelList(listToSave, () => {
+            console.log("[App] saved.")
+            const newLabelList = listToSave.map((label) => {
+                label.status = "intact";
+                return label;
+            }) 
             setLabelList(newLabelList);            
-            setLabelOptionList(createLabelOptionListFromLabelList(labelList));
-        }
+            setLabelOptionList(createLabelOptionListFromLabelList(newLabelList));
+        });
     }
 
     function revertLabel() {
@@ -334,6 +325,7 @@ function App () {
                 ?
                     <ArticleList 
                         articleListToShow={articleList} 
+                        labelOptionList={labelOptionList}
                         onArticleEdit={editArticle}
                         onArticleDelete={deleteArticle}
                     />

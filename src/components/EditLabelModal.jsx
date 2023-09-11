@@ -11,15 +11,15 @@ function EditLabelModal(props) {
                 <form onSubmit={props.onSubmit}>
                     <label>ID &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
                         <input name="id" type="text" placeholder="id" readOnly 
-                            value={props.labelToEdit.id}/><br />
+                            value={props.labelToEdit.id} /><br />
                     <label>Article Label &nbsp;&nbsp;&nbsp;&nbsp;</label>
                         <input name="articleLabel" type="text" placeholder="articleLabel" 
                             defaultValue={props.labelToEdit.articleLabel}/><br /><br />
                     <label>Status &nbsp;&nbsp;</label>
                         <input name="status" type="text" placeholder="status" readOnly 
                             value={props.labelToEdit.status}/><br /><br />
-                    <button onClick={props.onCancel}>Cancel</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <button type="submit">Apply</button>
+                    <button type="submit">Apply</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button onClick={props.onCancel}>Cancel</button>
                 </form>                
             </Modal>
         </div>            

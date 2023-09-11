@@ -1,20 +1,30 @@
 import Modal from 'react-modal';
 import Select from "react-select";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import "../index.css";
 
 
 function EditArticleModal(props) {
-    const [selectedLabels, setSelectedLabels] = useState(createSelectedLabels(props.articleToEdit))
+    const [selectedLabels, setSelectedLabels] = useState(createSelectedLabels(props));
 
-    function createSelectedLabels(article) {
-        if (article && article.labels) {
-            return article.labels.map(e=>{ 
-                return {value: e.id, label: e.articleLabel}; 
+    function createSelectedLabels(props) {
+        if (props.articleToShow && props.articleToShow.labels) {
+            const labels =  props.articleToShow.labels.map((labelId) => { 
+                for (var i=0; i<props.labelOptionList.length; i++) {
+                    if (props.labelOptionList[i].value === labelId) {
+                        return {value: labelId, label: props.labelOptionList[i].label}; 
+                    }
+                }
+                return [];
             }); 
+            return labels;
         }
         return [];
     }
+
+    useEffect(()=>{
+        setSelectedLabels(createSelectedLabels(props));
+    }, [props.articleToEdit]);
 
     function onMultiLableSelectorChange(data) {
         console.log("[EditArticleModal] onChange:")
@@ -22,8 +32,12 @@ function EditArticleModal(props) {
         setSelectedLabels(data);
     }
     
+    // const currSelectedLabels = createSelectedLabels(props.articleToEdit);
+    // setSelectedLabels(currSelectedLabels);
     console.log("[EditArticleModal] rendering article editor: ");
-    console.log(props.articleToEdit);
+    console.log( props.articleToEdit);
+    console.log(selectedLabels);
+
 
     return(
         <div>
@@ -51,8 +65,8 @@ function EditArticleModal(props) {
                     <label>Status &nbsp;&nbsp;</label>
                         <input name="status" type="text" placeholder="status" readOnly 
                             value={props.articleToEdit.status}/><br /><br />
-                    <button onClick={props.onCancel}>Cancel</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <button type="submit">Apply</button>
+                    <button type="submit">Apply</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button onClick={props.onCancel}>Cancel</button>
                 </form>
             </Modal>
         </div>            
