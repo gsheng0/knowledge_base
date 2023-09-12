@@ -13,7 +13,8 @@ function Label (props) {
         props.onLabelEditRequest(props.label.id);
     }
 
-    console.log("[Label] id: " + props.label.id);
+    console.log("[Label] rendering......"); 
+    console.log(props);
     return (
         <div className="label" key={props.label.id} >
             <h4><b>{props.label.articleLabel}</b></h4>

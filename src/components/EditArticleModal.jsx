@@ -36,10 +36,9 @@ function EditArticleModal(props) {
         setSelectedLabels(data);
     }
     
-    console.log("[EditArticleModal] rendering article editor: ");
-    console.log( props.articleToEdit);
+    console.log("[EditArticleModal] rendering......");
+    console.log( props);
     console.log(selectedLabels);
-
 
     return(
         <div>

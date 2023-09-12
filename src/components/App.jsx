@@ -101,21 +101,27 @@ function App () {
         event.preventDefault();
         var modalId = event.target.id.value;
         var modalTitle = event.target.title.value;
-        var modalContent = event.target.content.value;
+        var modalContent = event.target.textContent.value;
+        // debugger
         var modalSelectedLabels = [];
         const modalLabels = event.target.labels;
-        for (var i=0; i<modalLabels.length; i++) {
-            modalSelectedLabels.push(modalLabels[i].value);
-        }        
+        if (modalLabels.length) {
+            for (var i=0; i<modalLabels.length; i++) {
+                modalSelectedLabels.push(modalLabels[i].value);
+            }
+        } else if (modalLabels.value) {
+            modalSelectedLabels.push(modalLabels.value);
+        }
+
         console.log("[App] applyArticleModel: ");
-        console.log({title: modalTitle, content: modalContent, labels: modalSelectedLabels});
+        console.log({title: modalTitle, textContent: modalContent, labels: modalSelectedLabels});
         if (modalTitle === "" || modalContent === "") {
             console.log("[App]: title or content can't be empty!");
             return;
         } else {
             if (modalId === "") {
                 KbRepo.uuid("article", (newArticleId) => {
-                    var articleToCreate = {...article, id: newArticleId, title: modalTitle, content: modalContent, labels: modalSelectedLabels};
+                    var articleToCreate = {...article, id: newArticleId, title: modalTitle, textContent: modalContent, labels: modalSelectedLabels};
                     console.log("[App] new article:");
                     console.log(articleToCreate);
                     setArticle(articleToCreate);
@@ -125,7 +131,7 @@ function App () {
                 var newArticleList = articleList.map((articleToModify)=>{
                     if (articleToModify.id === modalId) {                        
                         articleToModify.title = modalTitle;
-                        articleToModify.content = modalContent;
+                        articleToModify.textContent = modalContent;
                         articleToModify.labels = modalSelectedLabels;
                         articleToModify.status = "modified";
                     }
@@ -270,7 +276,6 @@ function App () {
                 return article;
             }) 
             setArticleList(newArticleList);            
-            setLabelOptionList(createLabelOptionListFromLabelList(newArticleList));
         });
     }
 
@@ -307,6 +312,7 @@ function App () {
 
     /* -------------  HTML
        ------------------- */
+    console.log("[App] rendering ......");
     return (
         <div id="App">
             <MenuBar

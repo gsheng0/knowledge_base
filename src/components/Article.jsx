@@ -29,8 +29,10 @@ function Article (props) {
         return [];
     }
 
+    console.log("[Article] rendering...... ");
+    console.log(props);
     return (
-        <div className='article' key={props.articleToShow.id}>            
+        <div className='article' key={props.articleToShow.id}> 
             <Title 
                 title={props.articleToShow.title} 
                 id={props.articleToShow.id} 
@@ -41,7 +43,7 @@ function Article (props) {
                 createOn={props.articleToShow.createOn} 
                 updateOn={props.articleToShow.updateOn}                     
             />            
-            <Content content={props.articleToShow.content} />        
+            <Content textContent={props.articleToShow.textContent} />        
             <button onClick={handleEdit}>edit</button>&nbsp;&nbsp;
             <button onClick={handleDelete}>delete</button>    
         </div>

@@ -3,6 +3,8 @@ import Modal from 'react-modal';
 import "../index.css";
 
 function EditLabelModal(props) {
+    console.log("[EditLabelModal] rendering......");
+    console.log(props);
     return(
         <div>
             <Modal isOpen={props.popup} contentLabel="Label Editor" >

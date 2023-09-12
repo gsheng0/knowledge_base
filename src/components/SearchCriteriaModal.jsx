@@ -4,6 +4,8 @@ import Modal from 'react-modal';
 import "../index.css";
 
 function SearchCriterialModal(props) {
+    console.log("[SearchCriterialModal] rendering......");
+    console.log(props);
     return (            
         <div>
             <Modal isOpen={props.popup} contentLabel="Search Criteria Modal" >

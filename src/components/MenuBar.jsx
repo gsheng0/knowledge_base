@@ -20,6 +20,7 @@ function screenSelection(selectedScreen, onChangeFunction) {
 }
 
 export function MenuBar (props) {
+    console.log("[MenuBar] rendering " + props.selectedScreen);
     return (    
         (props.selectedScreen === ARTICLES) 
         ?

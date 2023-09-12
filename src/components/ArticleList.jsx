@@ -7,7 +7,6 @@ import "../index.css";
 function ArticleList (props) {
     console.log("[ArticleList] rendering: ");
     console.log(props);
-
     return (
         <div className="AticleList">
         { 
