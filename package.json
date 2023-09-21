@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^12.8.3",
     "axios": "^1.5.0",
     "cors": "^2.8.5",
+    "passport-google-oauth20": "^2.0.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-modal": "^3.16.1",
