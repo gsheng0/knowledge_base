@@ -1,34 +1,18 @@
-import React from "react";
 import { useState, useEffect } from "react";
 
+import ArticleList from "../components/ArticleList";
+import EditArticleModal from "../components/EditArticleModal";
+import SearchCriterialModal from "../components/SearchCriteriaModal";
 import { KbRepo } from "../KbRepo";
 
-import "../index.css";
-import {ARTICLES, MenuBar} from "./MenuBar";
-import ArticleList from "./ArticleList";
-import LabelList from "./LabelList";
-import EditArticleModal from "./EditArticleModal";
-import SearchCriterialModal from "./SearchCriteriaModal";
-import EditLabelModal from "./EditLabelModal";
-
-
-function App () {
-    /* ----------- states and effects
-       ----------- */
-    const [mainScreen, setMainScreen] = useState(ARTICLES)
-
+function NotesPage() {
     const [articleList, setArticleList] = useState([]);   
     const [articleModalIsOpen, setArticleModalIsOpen] = useState(false);
     const [article, setArticle] = useState({});
+    const [labelOptionList, setLabelOptionList] = useState([]);
 
     const [searchCriteria, setSearchCriteria] = useState("");
     const [searchModalIsOpen, setSearchModalIsOpen] = useState(false);
-
-    const [labelList, setLabelList] = useState([]);
-    const [labelModalIsOpen, setLabelModalIsOpen] = useState(false);
-    const [label, setLabel] = useState({});
-
-    const [labelOptionList, setLabelOptionList] = useState([]);
 
     function createLabelOptionListFromLabelList (articleLabelList) {
         return articleLabelList.map((e) => {
@@ -46,23 +30,13 @@ function App () {
             KbRepo.getLabelList((dbLabelList)=>{ 
                 console.log("[App] setting label list: ");
                 console.log(dbLabelList);
-                setLabelList(dbLabelList); 
                 setLabelOptionList(createLabelOptionListFromLabelList(dbLabelList));
             });
-        }, [] // only when initializing
-    ); 
+        }, []); 
 
-    /* --- main screen 
-       ---------------- */
-    function changeMainScreen(event) {
-        event.preventDefault();
-        const pickedScreen = event.target.value;
-        setMainScreen(pickedScreen);
-        console.log("[App]: picked: " + pickedScreen);
-    }
 
     /* --- create Article
-       ------------------ */
+        ------------------ */
     function newArticle() {
         var datetimestr = new Date().toISOString();
         setArticle({   
@@ -152,7 +126,7 @@ function App () {
     }
 
     /* --- Search Article
-       ------------------ */
+        ------------------ */
     function searchArticle() { setSearchModalIsOpen(true); }
 
     function applySearchModal(event) {
@@ -163,92 +137,6 @@ function App () {
     }
     
     function cancelSearchModal() { setSearchModalIsOpen(false); }
-   
-    /* ------ create labels
-       -------------------- */
-    function newLabel() {
-        setLabel({   
-            id: "",
-            articleLabel: "",
-            originalArticleLable: "",
-            status: "new" 
-        });
-        setLabelModalIsOpen(true);
-    }
-
-    function editLabel(id) {       
-        labelList.forEach((label)=>{
-            if (label.id === id) {
-                setLabel(label);
-            }
-        })
-        setLabelModalIsOpen(true);
-    }
-
-    function deleteLabel(id) {
-        console.log("[App]: deleting label: " + id);
-        var leftLabelList = 
-                labelList.map((label)=>{ 
-                    if (label.id === id) {
-                        label.status = "deleted"; 
-                    }
-                    return label;
-                });
-        setLabelList(leftLabelList);
-    }
-
-    function getArticleLabelId(articleLabel) {
-        for (var i = 0; i<labelList.length; i++) {
-            if (labelList[i].articleLabel === articleLabel) {
-                return labelList[i].id;
-            }
-        }
-        return null;
-    }
-
-    function applyLabelModal(event) {
-        event.preventDefault();
-        var modalId = event.target.id.value;
-        var modalArticleLabel = event.target.articleLabel.value;        
-        if (modalArticleLabel === "") {
-            console.log("[App]: Article label can't be empty!");
-            return;
-        } else {
-            if (modalId === "") {
-                if (getArticleLabelId(modalArticleLabel)) {
-                    alert("label " + modalArticleLabel + " already exists!");
-                    return;
-                }
-                KbRepo.uuid("label", (idFromDB) => {
-                    const labelToCreate = {...label, id: idFromDB, articleLabel: modalArticleLabel};
-                    console.log("[App] applyLableModel new-label:");
-                    console.log(labelToCreate);
-                    setLabel(labelToCreate);
-                    setLabelList(prevalue => { return [labelToCreate, ...prevalue]; }); 
-                }) ;
-            } else { // modify existing
-                const existingLabelId = getArticleLabelId(modalArticleLabel);
-                if (existingLabelId && existingLabelId !== modalId) {
-                    alert("label " + modalArticleLabel + " already exists!");
-                    return;
-                }
-                var newLabelList = labelList.map((label)=>{
-                    if (label.id === modalId) {
-                        label.articleLabel = modalArticleLabel;
-                        label.status = "modified";
-                    }
-                    return label; 
-                });
-                setLabelList(newLabelList);
-            }
-            setLabelModalIsOpen(false);
-        }
-    }
-
-    function cancelLabelModal() {
-        setLabelModalIsOpen(false);
-        console.log("[App]: cancel from label Modal");
-    }
 
     /* ------- db 
        ------- */
@@ -285,65 +173,21 @@ function App () {
         retrieveArticles(searchCriteria);
     }
 
-    function retrieveLabels() {
-        KbRepo.getLabelList((dbLabelList) => {
-            setLabelList(dbLabelList);
-        });                
-    }
-
-    function saveLabelChanges() {
-        console.log("[App]: Saving labels......");
-        const listToSave = labelList.filter((label) => label.status !== "deleted");        
-        KbRepo.updateLabelList(listToSave, () => {
-            console.log("[App] saved.")
-            const newLabelList = listToSave.map((label) => {
-                label.status = "intact";
-                return label;
-            }) 
-            setLabelList(newLabelList);            
-            setLabelOptionList(createLabelOptionListFromLabelList(newLabelList));
-        });
-    }
-
-    function revertLabel() {
-        console.log("[App]: revert changes pressed.");
-        retrieveLabels();
-    }
-
-
-    /* -------------  HTML
-       ------------------- */
-    console.log("[App] rendering ......");
-    return (
-        <div id="App">
-            <MenuBar
-                selectedScreen={mainScreen}
-                onMainScreenChange={changeMainScreen}
-                onSearchArticle={searchArticle}
-                onNewArticle={newArticle}
-                onSaveArticleChanges={saveArticleChanges}
-                onRevertArticle={revertArticle}
-                onNewLabel={newLabel}
-                onSaveLabelChanges={saveLabelChanges}
-                onRevertLabel={revertLabel}
-            />
-            {
-                mainScreen === ARTICLES
-                ?
-                    <ArticleList 
-                        articleListToShow={articleList} 
-                        labelOptionList={labelOptionList}
-                        onArticleEdit={editArticle}
-                        onArticleDelete={deleteArticle}
-                    />
-                :
-                    <LabelList 
-                        currMainScreen={mainScreen}
-                        labelList={labelList} 
-                        onLabelEdit={editLabel}
-                        onLabelDelete={deleteLabel}
-                    />
-            }
+    return <div><h1>Notes Page</h1>
+            <button onClick={searchArticle}><h3>Search</h3>
+                </button>&nbsp;&nbsp;&nbsp;
+            <button onClick={newArticle}><h3>New</h3>
+                </button>&nbsp;&nbsp;&nbsp;
+            <button onClick={saveArticleChanges}><h3>Save</h3>
+                </button>&nbsp;&nbsp;&nbsp;
+            <button onClick={revertArticle}><h3>Revert</h3>
+                </button>&nbsp;&nbsp;&nbsp;
+            <ArticleList 
+                articleListToShow={articleList} 
+                labelOptionList={labelOptionList}
+                onArticleEdit={editArticle}
+                onArticleDelete={deleteArticle}
+            />    
             <SearchCriterialModal  
                 popup={searchModalIsOpen}
                 onSubmit={applySearchModal}
@@ -357,14 +201,6 @@ function App () {
                 onSubmit={applyArticleModal}
                 onCancel={cancelArticleModal}
             />
-            <EditLabelModal 
-                popup={labelModalIsOpen}   
-                labelToEdit={label}
-                onSubmit={applyLabelModal}
-                onCancel={cancelLabelModal}
-            />
-        </div> 
-    ) ;
+    </div>
 }
-
-export default App;
+export default NotesPage;

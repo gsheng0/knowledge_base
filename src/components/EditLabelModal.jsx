@@ -12,16 +12,16 @@ function EditLabelModal(props) {
                     Label......</h2><br />
                 <form onSubmit={props.onSubmit}>
                     <label>ID &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                        <input name="id" type="text" placeholder="id" readOnly 
+                        <input name="id" type="text" placeholder="will auto gen" readOnly 
                             value={props.labelToEdit.id} /><br />
-                    <label>Article Label &nbsp;&nbsp;&nbsp;&nbsp;</label>
-                        <input name="articleLabel" type="text" placeholder="articleLabel" 
+                    <label>Notes Label &nbsp;&nbsp;&nbsp;&nbsp;</label>
+                        <input name="articleLabel" type="text" placeholder="Notes Label" 
                             defaultValue={props.labelToEdit.articleLabel}/><br /><br />
+                    <button type="submit">Apply</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <button onClick={props.onCancel}>Cancel</button><br /><br />
                     <label>Status &nbsp;&nbsp;</label>
                         <input name="status" type="text" placeholder="status" readOnly 
-                            value={props.labelToEdit.status}/><br /><br />
-                    <button type="submit">Apply</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <button onClick={props.onCancel}>Cancel</button>
+                            value={props.labelToEdit.status}/>
                 </form>                
             </Modal>
         </div>            
