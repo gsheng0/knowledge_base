@@ -8,7 +8,7 @@ function ArticleLabelList (props) {
         return (
             <div>
             { props.labelList.map((currLabel) => {
-                return <label key={currLabel.value}>{currLabel.label}&nbsp;&nbsp;</label>
+                return <label className="articleLabel" key={currLabel.value}>{currLabel.label}&nbsp;&nbsp;</label>
             })
             }
             </div>

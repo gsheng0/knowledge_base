@@ -8,7 +8,7 @@ function Content (props) {
 
     return (
         <div className="content">
-            <h5>{props.textContent && props.textContent.substring(0,64)}</h5>
+            {props.textContent && props.textContent.substring(0,128)}
         </div>
     )
 }

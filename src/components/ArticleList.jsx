@@ -8,7 +8,7 @@ function ArticleList (props) {
     console.log("[ArticleList] rendering: ");
     console.log(props);
     return (
-        <div className="AticleList">
+        <div className="articleList">
         { 
             props.articleListToShow.map((article) => {
                 return (

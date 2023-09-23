@@ -4,6 +4,8 @@ import ArticleList from "../components/ArticleList";
 import EditArticleModal from "../components/EditArticleModal";
 import SearchCriterialModal from "../components/SearchCriteriaModal";
 import { KbRepo } from "../KbRepo";
+import "../index.css";
+
 
 function NotesPage() {
     const [articleList, setArticleList] = useState([]);   
@@ -95,7 +97,7 @@ function NotesPage() {
             return;
         } else {
             if (modalId === "") {
-                KbRepo.uuid("article", (newArticleId) => {
+                KbRepo.uuid("note", (newArticleId) => {
                     var articleToCreate = {...article, id: newArticleId, title: modalTitle, textContent: modalContent, labels: modalSelectedLabels};
                     console.log("[App] new article:");
                     console.log(articleToCreate);

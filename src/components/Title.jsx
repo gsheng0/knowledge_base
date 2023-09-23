@@ -5,7 +5,10 @@ function Title (prop) {
     console.log("[Title] rendering......");
     console.log(prop);
     return (
-        <div className="title"><h4><b>{prop.title}</b>&nbsp;({prop.id})&nbsp;({prop.status})</h4></div>        
+        <div className="title">
+            <h4><b>{prop.title}</b></h4>
+            {prop.id}&nbsp;({prop.status})
+        </div>        
     )
 }
 

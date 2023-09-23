@@ -8,7 +8,7 @@ function Timestamps (props) {
     return (
         <div className="timeStamps">
             <h6>Created: {props.createOn}</h6>
-            <h6>Last Updated: {props.updateOn}</h6>
+            <h6>Updated: {props.updateOn}</h6>
         </div>
     )
 }

@@ -13,9 +13,9 @@ body {
 .articleList {
     width: 90vw;
     max-width: 1170px;
-    margin: 5rem auto;
+    margin: 1rem auto;
     display: grid;
-    gap: 2rem;
+    gap: 1rem;
 }
 
 @media screen and (min-width: 768px) {
@@ -27,8 +27,12 @@ body {
 .article {
     background: #eff;
     border-radius: 2rem;
-    padding: 2rem;
+    padding: 1rem;
     text-align: left;
+}
+
+.articleLabel {
+    background: rgb(241, 232, 214);    
 }
 
 .title {
@@ -36,17 +40,21 @@ body {
 }
 
 .labelList {
+    width: 90vw;
+    max-width: 1170px;
+    margin: 1rem auto;
     display: grid;
+    gap: 1rem;
 }
 
-@media screen and (min-width: 78px) {
+@media screen and (min-width: 768px) {
     .labelList {
-        grid-template-columns: repeat(5, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
 .label {
-    background: #eff;    
+    background: rgb(214, 241, 241);    
     border-radius: 1rem;
     padding: 1rem;
     text-align: left;
@@ -58,5 +66,5 @@ body {
 }
 
 .content {
-    background: #ffe;
+    background: rgba(241, 241, 11, 0.315);
 }

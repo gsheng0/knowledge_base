@@ -8,7 +8,7 @@ function LabelList (props) {
     console.log("[LabelList] rendering......");
     console.log(props);
         return (
-        <div className="LabelList" >
+        <div className="labelList" >
         {
             props.currMainScreen === LABELS
             && props.labelList 
