@@ -4,16 +4,17 @@ import LabelList from "../components/LabelList";
 import EditLabelModal from "../components/EditLabelModal";
 import { LABELS } from "../components/MenuBar";
 import { KbRepo } from "../KbRepo";
+import "../index.css";
 
 
-function LabelsPage() {
+function LabelsPage(props) {
     const [labelList, setLabelList] = useState([]);
     const [labelOptionList, setLabelOptionList] = useState([]);
     const [label, setLabel] = useState({});
     const [labelModalIsOpen, setLabelModalIsOpen] = useState(false);
 
     useEffect(()=>{
-        KbRepo.getLabelList((dbLabelList)=>{ 
+        KbRepo.getLabelList(props.userId, (dbLabelList)=>{ 
                 console.log("[App] setting label list: ");
                 console.log(dbLabelList);
                 setLabelList(dbLabelList); 
@@ -72,7 +73,7 @@ function LabelsPage() {
                     return;
                 }
                 KbRepo.uuid("label", (idFromDB) => {
-                    const labelToCreate = {...label, id: idFromDB, articleLabel: modalArticleLabel};
+                    const labelToCreate = {...label, id: idFromDB, userId: props.userId, articleLabel: modalArticleLabel};
                     console.log("[App] applyLableModel new-label:");
                     console.log(labelToCreate);
                     setLabel(labelToCreate);
@@ -139,13 +140,19 @@ function LabelsPage() {
 
 
     return <div>
-        <h1>Labels Page</h1>
-        <button onClick={newLabel}><h3>New</h3>
-            </button>&nbsp;&nbsp;&nbsp;
-        <button onClick={saveLabelChanges}><h3>Save</h3>
-            </button>&nbsp;&nbsp;&nbsp;
-        <button onClick={revertLabel}><h3>Revert</h3>
-            </button>&nbsp;&nbsp;&nbsp;
+        <center><h1>My Labels</h1>
+        { props.userId ?
+            <div>
+                <button onClick={newLabel}><h3>New</h3>
+                    </button>&nbsp;&nbsp;&nbsp;
+                <button onClick={saveLabelChanges}><h3>Save</h3>
+                    </button>&nbsp;&nbsp;&nbsp;
+                <button onClick={revertLabel}><h3>Revert</h3>
+                    </button>&nbsp;&nbsp;&nbsp;
+            </div>
+            : <h4>login first!</h4>
+        }    
+        </center>
         <LabelList 
             currMainScreen={LABELS}
             labelList={labelList} 

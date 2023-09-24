@@ -35,10 +35,10 @@ function Article (props) {
         <div className='article' key={props.articleToShow.id}> 
             <Title 
                 title={props.articleToShow.title} 
-                id={props.articleToShow.id} 
-                status={props.articleToShow.status}                     
             />
             <ArticleLabelList labelList={createSelectedLabels(props)} />    
+            <h6>{props.articleToShow.id} : {props.articleToShow.status}  </h6>
+            
             <Timestamps 
                 createOn={props.articleToShow.createOn} 
                 updateOn={props.articleToShow.updateOn}                     

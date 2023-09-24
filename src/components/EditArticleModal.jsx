@@ -54,6 +54,7 @@ function EditArticleModal(props) {
                             defaultValue={props.articleToEdit.title}/><br /><br />
                     <textarea name="textContent" placeholder="content" rows={20} cols={100} 
                             defaultValue={props.articleToEdit.textContent}/><br />
+                    (expect it to be upgraded to a rich editor soon......)<br/>
                     <Select 
                         name="labels"
                         options={props.labelOptionList}

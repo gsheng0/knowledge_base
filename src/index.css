@@ -31,6 +31,20 @@ body {
     text-align: left;
 }
 
+.articleLabelList {
+    width: 30vw;
+    max-width: 370px;
+    margin: 0rem auto;
+    display: grid;
+    gap: 0rem;
+}
+
+@media screen and (min-width: 48x) {
+    .articleLabelList {
+        grid-template-columns: repeat(3, 1fr)
+    }
+}
+
 .articleLabel {
     background: rgb(241, 232, 214);    
 }

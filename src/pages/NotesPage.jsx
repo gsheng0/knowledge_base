@@ -7,7 +7,7 @@ import { KbRepo } from "../KbRepo";
 import "../index.css";
 
 
-function NotesPage() {
+function NotesPage(props) {
     const [articleList, setArticleList] = useState([]);   
     const [articleModalIsOpen, setArticleModalIsOpen] = useState(false);
     const [article, setArticle] = useState({});
@@ -23,13 +23,13 @@ function NotesPage() {
     }
 
     useEffect(()=>{
-            KbRepo.getMostRecentArticles(3, (dbArticleList) => {
+            KbRepo.getMostRecentArticles(props.userId, 3, (dbArticleList) => {
                 setArticleList(dbArticleList);
             });
-            KbRepo.getMostRecentCriteria(1, (criteria) => {
+            KbRepo.getMostRecentCriteria(props.userId, (criteria) => {
                 setSearchCriteria(criteria.contentPattern);
             }); 
-            KbRepo.getLabelList((dbLabelList)=>{ 
+            KbRepo.getLabelList(props.userId, (dbLabelList)=>{ 
                 console.log("[App] setting label list: ");
                 console.log(dbLabelList);
                 setLabelOptionList(createLabelOptionListFromLabelList(dbLabelList));
@@ -98,7 +98,7 @@ function NotesPage() {
         } else {
             if (modalId === "") {
                 KbRepo.uuid("note", (newArticleId) => {
-                    var articleToCreate = {...article, id: newArticleId, title: modalTitle, textContent: modalContent, labels: modalSelectedLabels};
+                    var articleToCreate = {...article, id: newArticleId, userId: props.userId, title: modalTitle, textContent: modalContent, labels: modalSelectedLabels};
                     console.log("[App] new article:");
                     console.log(articleToCreate);
                     setArticle(articleToCreate);
@@ -150,10 +150,10 @@ function NotesPage() {
         if (inputCriteria !== searchCriteria) {
             setSearchCriteria(inputCriteria);
             console.log("[App]: criteria:" + inputCriteria);
-            KbRepo.searchForArticle(inputCriteria, (dbArticleList) => {
+            KbRepo.searchForArticle(props.userId, inputCriteria, (dbArticleList) => {
                 setArticleList(dbArticleList);
             });        
-            KbRepo.updateCriteria(inputCriteria);
+            KbRepo.updateCriteria({userId: props.userId, contentPattern: inputCriteria});
         }
     }
 
@@ -175,15 +175,22 @@ function NotesPage() {
         retrieveArticles(searchCriteria);
     }
 
-    return <div><h1>Notes Page</h1>
-            <button onClick={searchArticle}><h3>Search</h3>
-                </button>&nbsp;&nbsp;&nbsp;
-            <button onClick={newArticle}><h3>New</h3>
-                </button>&nbsp;&nbsp;&nbsp;
-            <button onClick={saveArticleChanges}><h3>Save</h3>
-                </button>&nbsp;&nbsp;&nbsp;
-            <button onClick={revertArticle}><h3>Revert</h3>
-                </button>&nbsp;&nbsp;&nbsp;
+    return <div>
+        <center>
+            <h1>My Notes</h1>
+            { props.userId ?
+                <div>
+                    <button onClick={searchArticle}><h3>Search</h3>
+                        </button>&nbsp;&nbsp;&nbsp;
+                    <button onClick={newArticle}><h3>New</h3>
+                        </button>&nbsp;&nbsp;&nbsp;
+                    <button onClick={saveArticleChanges}><h3>Save</h3>
+                        </button>&nbsp;&nbsp;&nbsp;
+                    <button onClick={revertArticle}><h3>Revert</h3>
+                        </button>&nbsp;&nbsp;&nbsp;
+                </div>
+                : <h4>login first!</h4>
+            }    
             <ArticleList 
                 articleListToShow={articleList} 
                 labelOptionList={labelOptionList}
@@ -203,6 +210,7 @@ function NotesPage() {
                 onSubmit={applyArticleModal}
                 onCancel={cancelArticleModal}
             />
+        </center>            
     </div>
 }
 export default NotesPage;

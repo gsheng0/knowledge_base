@@ -1,17 +1,18 @@
 
 
-function LoginPage() {
-    return <div><h1> Login Page</h1>
-    <form>
+function LoginPage(props) {
+    return <center><h1> {props.loginId ? "Are you sure to logout?" : "Please login"}</h1>
+    <form onSubmit={props.onLoginSubmit}>
         <table>
-            <tr><td>User ID:</td><td><input type="text" /></td></tr>
-            <tr><td>Password:</td><td><input type="password" /></td></tr>
+        <tbody>
+            <tr><td>Login ID:</td><td><input id="loginId" type="text" readOnly={props.loginId} defaultValue={props.loginId}/></td></tr>
+            {!props.loginId && <tr><td>Password:</td><td><input id="password" type="password" /></td></tr>}
             <tr>
-                <td><button>Cancel</button></td>
-                <td><button>Login</button></td>
+                <td><button type='submit'>Submit</button></td>
+                <td><button onClick={props.onLoginCancel}>Cancel</button></td>
             </tr>
-        </table>
+        </tbody></table>
     </form>
-    </div>
+    </center>
 }
 export default LoginPage;

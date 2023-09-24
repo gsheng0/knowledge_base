@@ -10,22 +10,35 @@ export class KbRepo {
             onResp(resp.data);
         });
     }
-    
     /* -------
-       article 
+       users 
        ------- */
-
-    static searchForArticle(searchTerm, onResp){
-        axios.get(kbBaseUrl + "search?query=" + searchTerm).then(resp => {
-            console.log("[KbRepo] search query: " + searchTerm);
+    static loginAs (loginId, password, onResp) {
+        axios.get(kbBaseUrl + "login?loginId=" + loginId + "&password=" + password).then(resp => {
+            console.log("got userId: " + resp.data);
+            onResp(resp.data);
+        });
+    }    
+    static registerAs (email, loginId, password, onResp) {
+        axios.get(kbBaseUrl + "register?email=" + email + "&loginId=" + loginId + "&password=" + password).then(resp => {
+            console.log("got userId: " + resp.data);
+            onResp(resp.data);
+        });
+    }    
+    /* -------
+       notes 
+       ------- */
+    static searchForArticle(userId, searchTerm, onResp){
+        axios.get(kbBaseUrl + "search?userId=" + userId + "&query=" + searchTerm).then(resp => {
+            console.log("[KbRepo] search userId=" + userId + ", query: " + searchTerm);
             console.log(resp.data);
             onResp(resp.data);
         }) 
     }
 
-    static getMostRecentArticles(n, onResp){
-        axios.get(kbBaseUrl + "most-recent-articles?num=" + n).then(resp => {
-            console.log("[KbRepo] most-recent-articles:  " + n);
+    static getMostRecentArticles(userId, n, onResp){
+        axios.get(kbBaseUrl + "most-recent-articles?userId=" + userId + "&num=" + n).then(resp => {
+            console.log("[KbRepo] most-recent-articles:  " + userId + ", " + n);
             console.log(resp.data);
             onResp(resp.data);
         })
@@ -43,9 +56,10 @@ export class KbRepo {
         --------------- */
 
     static updateCriteria(criteria) {
+        console.log("[KbRepo] update-criteria: ")
+        console.log(criteria);
         axios.post(kbBaseUrl + "update-criteria", criteria)
         .then(resp => {
-            console.log("[KbRepo] update-criteria: ", criteria);
             console.log(resp.data);  
         })
     }
@@ -62,9 +76,9 @@ export class KbRepo {
         label list 
         ----------- */
 
-    static getLabelList(onResp) {
-        axios.get(kbBaseUrl + "label-list").then(resp => {
-            console.log("[KbRepo] got all labels from DB: ")
+    static getLabelList(userId, onResp) {
+        axios.get(kbBaseUrl + "label-list?userId=" + userId).then(resp => {
+            console.log("[KbRepo] got all labels from DB for userId " + userId + ": ");
             console.log(resp.data);
             onResp(resp.data);            
         });

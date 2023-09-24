@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import ReactModal from "react-modal"
 
 import AppPlan3 from "./AppPlan3";

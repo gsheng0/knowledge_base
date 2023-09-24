@@ -7,7 +7,6 @@ function Title (prop) {
     return (
         <div className="title">
             <h4><b>{prop.title}</b></h4>
-            {prop.id}&nbsp;({prop.status})
         </div>        
     )
 }

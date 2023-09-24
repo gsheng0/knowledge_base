@@ -7,21 +7,18 @@ import { LABELS } from "./MenuBar";
 function LabelList (props) {
     console.log("[LabelList] rendering......");
     console.log(props);
-        return (
+    return (
         <div className="labelList" >
         {
-            props.currMainScreen === LABELS
-            && props.labelList 
-            && props.labelList.length > 0  
-            && props.labelList.map(label => {
-              return (
-                <Label 
-                    label={label}
-                    onLabelDeleteRequest={props.onLabelDelete}
-                    onLabelEditRequest={props.onLabelEdit}
-                />
-              );  
-            })
+          props.labelList.map(label => {
+            return (
+              <Label 
+                  label={label}
+                  onLabelDeleteRequest={props.onLabelDelete}
+                  onLabelEditRequest={props.onLabelEdit}
+              />
+            );  
+          })
         }
         </div>
     )
