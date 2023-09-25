@@ -43,7 +43,7 @@ function EditArticleModal(props) {
     return(
         <div>
             <Modal isOpen={props.popup} contentLabel="Article Editing Modal" >
-                <h2>{ props.articleToEdit.id === "" ? "Creating New " : "Editing Existing "} 
+                <h2>{ props.articleToEdit.id === "" ? "Creating New " : "Viewing Existing "} 
                     Article......</h2><br />
                 <form onSubmit={props.onSubmit}>
                     <label>ID &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>

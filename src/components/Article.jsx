@@ -44,8 +44,8 @@ function Article (props) {
                 updateOn={props.articleToShow.updateOn}                     
             />            
             <Content textContent={props.articleToShow.textContent} />        
-            <button onClick={handleEdit}>edit</button>&nbsp;&nbsp;
-            <button onClick={handleDelete}>delete</button>    
+            <button onClick={handleEdit}>More</button>&nbsp;&nbsp;
+            <button onClick={handleDelete}>Delete</button>    
         </div>
     )
 }

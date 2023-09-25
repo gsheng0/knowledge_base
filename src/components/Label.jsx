@@ -19,8 +19,8 @@ function Label(props) {
         <div className="label" key={props.label.id} >
             <h4><b>{props.label.articleLabel}</b></h4>
             {props.label.id} [{props.label.status}] &nbsp;&nbsp;
-            <button onClick={handleEdit}>edit</button>&nbsp;&nbsp;
-            <button onClick={handleDelete}>delete</button>
+            <button onClick={handleEdit}>Change</button>&nbsp;&nbsp;
+            <button onClick={handleDelete}>Delete</button>
         </div>
     );
 }

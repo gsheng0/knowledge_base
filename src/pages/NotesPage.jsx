@@ -180,16 +180,16 @@ function NotesPage(props) {
             <h1>My Notes</h1>
             { props.userId ?
                 <div>
-                    <button onClick={searchArticle}><h3>Search</h3>
-                        </button>&nbsp;&nbsp;&nbsp;
-                    <button onClick={newArticle}><h3>New</h3>
-                        </button>&nbsp;&nbsp;&nbsp;
-                    <button onClick={saveArticleChanges}><h3>Save</h3>
-                        </button>&nbsp;&nbsp;&nbsp;
-                    <button onClick={revertArticle}><h3>Revert</h3>
-                        </button>&nbsp;&nbsp;&nbsp;
+                    <button onClick={searchArticle}><h4>Search</h4>
+                        </button>&nbsp;&nbsp;
+                    <button onClick={newArticle}><h4>New</h4>
+                        </button>&nbsp;&nbsp;
+                    <button onClick={saveArticleChanges}><h4>Save</h4>
+                        </button>&nbsp;&nbsp;
+                    <button onClick={revertArticle}><h4>Revert</h4>
+                        </button>&nbsp;
                 </div>
-                : <h4>login first!</h4>
+                : <div><h4>login first!</h4></div>
             }    
             <ArticleList 
                 articleListToShow={articleList} 

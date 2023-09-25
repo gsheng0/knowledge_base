@@ -140,17 +140,17 @@ function LabelsPage(props) {
 
 
     return <div>
-        <center><h1>My Labels</h1>
+        <center><h1>My Tags</h1>
         { props.userId ?
             <div>
-                <button onClick={newLabel}><h3>New</h3>
-                    </button>&nbsp;&nbsp;&nbsp;
-                <button onClick={saveLabelChanges}><h3>Save</h3>
-                    </button>&nbsp;&nbsp;&nbsp;
-                <button onClick={revertLabel}><h3>Revert</h3>
-                    </button>&nbsp;&nbsp;&nbsp;
+                <button onClick={newLabel}><h4>New</h4>
+                    </button>&nbsp;
+                <button onClick={saveLabelChanges}><h4>Save</h4>
+                    </button>&nbsp;
+                <button onClick={revertLabel}><h4>Revert</h4>
+                    </button>&nbsp;
             </div>
-            : <h4>login first!</h4>
+            : <div><h4>login first!</h4></div>
         }    
         </center>
         <LabelList 
