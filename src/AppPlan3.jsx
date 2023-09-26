@@ -74,7 +74,7 @@ function AppPlan3() {
     return <div>
         <Link to="/about">About</Link>&nbsp;
         <Link to="/notes">Notes</Link>&nbsp;
-        <Link to="/labels">Labels</Link>&nbsp;
+        <Link to="/labels">Tags</Link>&nbsp;
         { !user.userId && 
         <Link to="/registration">Registration</Link>
         }&nbsp;

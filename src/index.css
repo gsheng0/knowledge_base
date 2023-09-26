@@ -20,7 +20,7 @@ body {
 
 @media screen and (min-width: 768px) {
     .articleList {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
     }
 }
 
@@ -41,7 +41,7 @@ body {
 
 @media screen and (min-width: 48x) {
     .articleLabelList {
-        grid-template-columns: repeat(3, 1fr)
+        grid-template-columns: repeat(4, 1fr)
     }
 }
 
@@ -63,7 +63,8 @@ body {
 
 @media screen and (min-width: 768px) {
     .labelList {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
+
     }
 }
 

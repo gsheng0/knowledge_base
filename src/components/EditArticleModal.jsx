@@ -1,11 +1,13 @@
 import Modal from 'react-modal';
 import Select from "react-select";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import "../index.css";
-
+import ReactQuill from "react-quill";
+import 'react-quill/dist/quill.snow.css';
 
 function EditArticleModal(props) {
     const [selectedLabels, setSelectedLabels] = useState(createSelectedLabels(props));
+    const textArea = useRef();
 
     function createSelectedLabels(props) {
         if (props.articleToEdit && props.articleToEdit.labels) {
@@ -52,9 +54,20 @@ function EditArticleModal(props) {
                     <label>TITLE &nbsp;&nbsp;&nbsp;&nbsp;</label>
                         <input name="title" type="text" placeholder="Title" 
                             defaultValue={props.articleToEdit.title}/><br /><br />
-                    <textarea name="textContent" placeholder="content" rows={20} cols={100} 
-                            defaultValue={props.articleToEdit.textContent}/><br />
-                    (expect it to be upgraded to a rich editor soon......)<br/>
+                    <textarea ref={textArea} name="textContent" hidden defaultValue={props.articleToEdit.textContent} />
+                    <ReactQuill
+                        value={props.articleToEdit.textContent}
+                        onChange={(content, deltal, source, editor) => {            
+                            textArea.current.value = content;
+                        }}
+                        modules={{
+                                toolbar: [
+                                [{ header: [1, 2, false] }],
+                                ['bold', 'italic', 'underline'],
+                                ['image', 'code-block']
+                                ]
+                            }}
+                        />
                     <Select 
                         name="labels"
                         options={props.labelOptionList}

@@ -2,17 +2,23 @@ import React from "react";
 import Select from "react-select";
 import { useState } from "react";
 
+import ReactQuill from "react-quill";
+import 'react-quill/dist/quill.snow.css'
+//  https://www.devtip.co/react-quil/
+
 function Test() {
     const [selectedOptions, setSelectedOptions] = useState();
+    const [editorValue, setEditorValue] = useState('');
 
     function onSubmit(event) {
         event.preventDefault();
-        console.log(event.target.labels);
         const labels = event.target.labels;
-        // console.log(labels[0].value);
         for (var i=0; i<labels.length; i++) {
             console.log(labels[i].value);    
         }
+        const quill = event.target.quill;
+        console.log(quill);
+        
         debugger
     }
 
@@ -40,6 +46,17 @@ function Test() {
                 isMulti
             />   
             <button type="submit">Apply</button>
+
+            <ReactQuill 
+                id="quill"
+                name="quill"
+                value={editorValue}
+                onChange={(value) => { 
+                    console.log("editor changed to:");
+                    console.log(value);
+                    setEditorValue(value);
+                }}
+            />
         </form>                
     );
 }
