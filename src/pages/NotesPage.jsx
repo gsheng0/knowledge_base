@@ -23,7 +23,7 @@ function NotesPage(props) {
     }
 
     useEffect(()=>{
-            KbRepo.getMostRecentArticles(props.userId, 3, (dbArticleList) => {
+            KbRepo.getMostRecentArticles(props.userId, 10, (dbArticleList) => {
                 setArticleList(dbArticleList);
             });
             KbRepo.getMostRecentCriteria(props.userId, (criteria) => {
@@ -177,7 +177,7 @@ function NotesPage(props) {
 
     return <div>
         <center>
-            <h1>My Notes</h1>
+            <h1>{props.loginId}'s Notes</h1>
             { props.userId ?
                 <div>
                     <button onClick={searchArticle}><h4>Search</h4>

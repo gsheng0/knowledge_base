@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const baseUrl = "http://192.168.1.211:8080/";
+// const baseUrl = "http://192.168.1.211:8080/";
+const baseUrl = "http://gsheng.does-it.net:8081/";
 const kbBaseUrl = baseUrl + "kb/";
 
 export class KbRepo {

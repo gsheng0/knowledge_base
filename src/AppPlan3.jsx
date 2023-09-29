@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import NavigationContext from './context/navigation';
 import Link from "./components/Link";
 import Route from "./components/Route";
@@ -14,6 +14,10 @@ import { KbRepo } from './KbRepo';
 function AppPlan3() {
     const [user, setUser] = useState({userId: '1', loginId: 'DemoUser'});
     const {navigate } = useContext(NavigationContext);
+
+    useEffect(()=>{
+        user.loginId && navigate("/notes");
+    }, []);
 
     function onLoginSubmit(event) {
         console.log("submit login/off.")
@@ -82,7 +86,7 @@ function AppPlan3() {
         <Link to="/login">{user.userId ? "Logout " + user.loginId  : "Login"}</Link>
         <Route path="/"> <AboutPage /></Route>
         <Route path="/about"> <AboutPage /></Route>
-        <Route path="/notes"> <NotesPage userId={user.userId} /></Route>
+        <Route path="/notes"> <NotesPage userId={user.userId} loginId={user.loginId} /></Route>
         <Route path="/labels"> <LabelsPage userId={user.userId} /></Route>
         <Route path="/registration"> 
             <RegistrationPage onRegistrationSubmit={onRegistrationSubmit} onRegistrationCancel={onRegistrationCancel} />
