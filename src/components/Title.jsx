@@ -1,13 +1,14 @@
 import React from "react";
 import "../index.css";
 
-function Title (prop) {
+function Title ({title, status}) {
     console.log("[Title] rendering......");
-    console.log(prop);
+    console.log({title, status});
     return (
-        <div className="title">
-            <h4><b>{prop.title}</b></h4>
-        </div>        
+        <div className="ml-2 mr-2 mb-2 text-center font-extrabold text-blue-800 ">
+            {title + " (" + status + ")"}
+        </div>    
+           
     )
 }
 

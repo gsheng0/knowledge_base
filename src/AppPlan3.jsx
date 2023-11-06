@@ -1,6 +1,5 @@
-import { useState, useEffect, useContext } from 'react';
-import NavigationContext from './context/navigation';
-import Link from "./components/Link";
+import { useState, useEffect} from 'react';
+import Sidebar from './components/Sidebar';
 import Route from "./components/Route";
 
 import AccountPage from './pages/AccountPage';
@@ -10,15 +9,16 @@ import NotesPage from './pages/NotesPage';
 import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
 import { KbRepo } from './KbRepo';
+import useNavigation from './hooks/useNavigation';
 
 function AppPlan3() {
     const [user, setUser] = useState({userId: '1', loginId: 'DemoUser'});
-    const {navigate } = useContext(NavigationContext);
+    const {navigate} = useNavigation();
 
     useEffect(()=>{
-        user.loginId && navigate("/notes");
+        user.loginId && navigate("/labels");
     }, []);
-
+    
     function onLoginSubmit(event) {
         console.log("submit login/off.")
         event.preventDefault();
@@ -54,7 +54,7 @@ function AppPlan3() {
         const inputPswd = event.target.password.value;
         const inputPswd2 = event.target.reTypedPassword.value;
 
-        if (inputPswd != inputPswd2) {
+        if (inputPswd !== inputPswd2) {
             alert("password do not match!");
         }
         else {
@@ -76,27 +76,24 @@ function AppPlan3() {
     }
 
     return <div>
-        <Link to="/about">About</Link>&nbsp;
-        <Link to="/notes">Notes</Link>&nbsp;
-        <Link to="/labels">Tags</Link>&nbsp;
-        { !user.userId && 
-        <Link to="/registration">Registration</Link>
-        }&nbsp;
-        <Link to="/account">Account</Link>&nbsp;
-        <Link to="/login">{user.userId ? "Logout " + user.loginId  : "Login"}</Link>
-        <Route path="/"> <AboutPage /></Route>
-        <Route path="/about"> <AboutPage /></Route>
-        <Route path="/notes"> <NotesPage userId={user.userId} loginId={user.loginId} /></Route>
-        <Route path="/labels"> <LabelsPage userId={user.userId} /></Route>
-        <Route path="/registration"> 
-            <RegistrationPage onRegistrationSubmit={onRegistrationSubmit} onRegistrationCancel={onRegistrationCancel} />
-        </Route>
-        <Route path="/login"> 
-            <LoginPage loginId={user.loginId} onLoginSubmit={onLoginSubmit} onLoginCancel={onLoginCancel} />
-        </Route>
-        <Route path="/account">
-            <AccountPage user={user}/>
-        </Route>
+            <div className="container mx-auto grid grid-cols-8 gap-4 mt-4">
+                <Sidebar user={user} />
+                <div className="col-span-7">
+                    <Route path="/"> <AboutPage /></Route>
+                    <Route path="/about"> <AboutPage /></Route>
+                    <Route path="/notes"> <NotesPage userId={user.userId} loginId={user.loginId} /></Route>
+                    <Route path="/labels"> <LabelsPage userId={user.userId} /></Route>
+                    <Route path="/registration"> 
+                        <RegistrationPage onRegistrationSubmit={onRegistrationSubmit} onRegistrationCancel={onRegistrationCancel} />
+                    </Route>
+                    <Route path="/login"> 
+                        <LoginPage loginId={user.loginId} onLoginSubmit={onLoginSubmit} onLoginCancel={onLoginCancel} />
+                    </Route>
+                    <Route path="/account">
+                        <AccountPage user={user}/>
+                    </Route>
+                </div>
+            </div>
     </div>
 }
 

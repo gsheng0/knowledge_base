@@ -5,6 +5,7 @@ import EditArticleModal from "../components/EditArticleModal";
 import SearchCriterialModal from "../components/SearchCriteriaModal";
 import { KbRepo } from "../KbRepo";
 import "../index.css";
+import { act } from "react-dom/test-utils";
 
 
 function NotesPage(props) {
@@ -175,21 +176,22 @@ function NotesPage(props) {
         retrieveArticles(searchCriteria);
     }
 
-    return <div>
-        <center>
-            <h1>{props.loginId}'s Notes</h1>
+    const actionButtonClassName = "bg-blue-100 rounded-lg border-solid border-1 border-blue-400 outline outline-offset-1 outline-1 hover:text-blue-800 hover:font-extrabold";
+
+    return <div className="">
+            <div className="mb-10 text-center text-3xl font-extrabold text-blue-800">{props.loginId}'s Notes</div>
             { props.userId ?
-                <div>
-                    <button onClick={searchArticle}><h4>Search</h4>
-                        </button>&nbsp;&nbsp;
-                    <button onClick={newArticle}><h4>New</h4>
-                        </button>&nbsp;&nbsp;
-                    <button onClick={saveArticleChanges}><h4>Save</h4>
-                        </button>&nbsp;&nbsp;
-                    <button onClick={revertArticle}><h4>Revert</h4>
-                        </button>&nbsp;
+                <div className="text-center text-lg text-blue-800 flex flex-row gap-2">
+                    <button className={actionButtonClassName} onClick={searchArticle}>
+                        Search</button>
+                    <button className={actionButtonClassName} onClick={newArticle}>
+                        New</button>
+                    <button className={actionButtonClassName} onClick={saveArticleChanges}>Save
+                        </button>
+                    <button className={actionButtonClassName} onClick={revertArticle}>Revert
+                        </button>
                 </div>
-                : <div><h4>login first!</h4></div>
+                : <div>login first!</div>
             }    
             <ArticleList 
                 articleListToShow={articleList} 
@@ -210,7 +212,6 @@ function NotesPage(props) {
                 onSubmit={applyArticleModal}
                 onCancel={cancelArticleModal}
             />
-        </center>            
     </div>
 }
 export default NotesPage;

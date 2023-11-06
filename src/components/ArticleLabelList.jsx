@@ -6,9 +6,9 @@ function ArticleLabelList(props) {
     console.log(props);
     if (props.labelList.length > 0) {
         return (
-            <div className="notWorkarticleLabelList">
+            <div className="flex gap-1">
                 {props.labelList.map((currLabel) => {
-                    return <button className="articleLabel" key={currLabel.value}>{currLabel.label}</button>
+                    return <button className="ml-2 rounded-lg border bg-yellow-200 border-blue-800" key={currLabel.value}>{currLabel.label}</button>
                 })
                 }
             </div>

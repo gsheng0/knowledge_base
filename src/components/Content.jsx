@@ -21,8 +21,11 @@ function Content (props) {
     }
 
     return (
-        <div className="content">
+        <div>
+            <div className="ml-2 font-semibold">Content (1st 128 characters): </div>
+            <div className="ml-2 ">
             {props.textContent && getShortContent(props.textContent)}
+            </div>
         </div>
     )
 }

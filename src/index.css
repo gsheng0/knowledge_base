@@ -1,4 +1,8 @@
-* { 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* * { 
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -82,4 +86,4 @@ body {
 
 .content {
     background: rgba(241, 241, 11, 0.315);
-}
+} */
