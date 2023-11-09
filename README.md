@@ -69,3 +69,59 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+### ##################
+### tailwind css used
+### ##################
+
+### page title:  
+className="mb-2 text-center text-3xl font-extrabold text-blue-800 bg-blue-50"
+
+### action Buton
+    const actionButtonClassName = classNames({  "w-16": true, 
+                                                "bg-blue-100": true, 
+                                                "rounded-lg": true,  
+                                                "border-solid": true,  
+                                                "border-1": true, 
+                                                "border-blue-400": true,
+                                                "outline": true,
+                                                "outline-offset-1": true,
+                                                "outline-1": true,
+                                                "hover:text-blue-800": true,
+                                                "hover:font-extrabold": true
+                                            });
+
+actionButtonClassName = "bg-blue-100 mb-2 mt-2 mr-3 text-center text-sm text-blue-800 rounded-lg border-solid border-1 border-blue-400 outline outline-offset-1 outline-1 hover:text-blue-800 hover:font-extrabold"
+
+actionButtonClassName = "bg-blue-100 rounded-lg border-solid border-1 border-blue-400 outline outline-offset-1 outline-1 hover:text-blue-800 hover:font-extrabold"
+
+### Card grids
+className="container mx-auto grid lg:grid-cols-2 xl:grid-cols-4 gap-4 mt-4"
+
+### card 
+className='text-left text-sm  bg-yellow-50 rounded-3xl outline outline-1 outline-yellow-800'
+
+### Card Title
+className="ml-2 mr-2 mb-2 text-center font-extrabold text-blue-800 "
+
+### Attribute grid - ID, CreateOn, UpdateOn
+className="ml-2 grid grid-cols-3 text-sm "
+className="font-semibold"
+className="col-span-2"
+
+
+className="ml-2 flex gap-1"
+className="rounded-lg border bg-yellow-200 border-blue-800"
+className="text-center"
+className="mb-5 font-extrabold  text-3xl "
+className="text-xl"
+className="container mx-auto grid lg:grid-cols-2 xl:grid-cols-4 gap-4 mt-4"
+className='text-left text-sm  bg-yellow-50 rounded-3xl outline outline-1 outline-black'
+
+
+className='text-left text-sm  bg-yellow-50 rounded-3xl outline outline-1 outline-black'
+
+
+
+

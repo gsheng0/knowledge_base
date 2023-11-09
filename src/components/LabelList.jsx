@@ -8,7 +8,7 @@ function LabelList (props) {
     console.log("[LabelList] rendering......");
     console.log(props);
     return (
-        <div className="labelList" >
+        <div className="container mx-auto grid lg:grid-cols-2 xl:grid-cols-4 gap-4 mt-4" >
         {
           props.labelList.map(label => {
             return (

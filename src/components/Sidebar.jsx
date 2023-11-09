@@ -12,13 +12,14 @@ function Sidebar({user}) {
     ];
 
     return (
-        <div className="sticky top-0 flex flex-col">
+        <div className="sticky top-2 flex flex-col bg-blue-50">
             { links.map((link) => {
                 return link.condition ? 
-                        <Link key={link.label} 
+                        <Link 
+                            key={link.label} 
                             to={link.path} 
-                            className="mb-3"
-                            activeClassName="text-xl font-bold border-l-4 border-blue-500 pl-2"
+                            className="ml-4 mt-2 mb-2 text-lg"
+                            activeClassName="text-3xl font-bold border-l-4 border-blue-500 pl-2"
                         >{link.label}</Link>        
                         : null;
                })

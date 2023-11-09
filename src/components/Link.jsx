@@ -6,7 +6,7 @@ function Link({to, children, className, activeClassName}) {
     const {navigate, currentPath } = useNavigation();
 
     const classes = classname(
-        'text-blue-800', 
+        'text-blue-800 hover:font-bold', 
         className,
         currentPath === to && activeClassName
     );

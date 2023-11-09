@@ -16,7 +16,7 @@ function AppPlan3() {
     const {navigate} = useNavigation();
 
     useEffect(()=>{
-        user.loginId && navigate("/labels");
+        user.loginId && navigate("/notes");
     }, []);
     
     function onLoginSubmit(event) {
@@ -76,7 +76,7 @@ function AppPlan3() {
     }
 
     return <div>
-            <div className="container mx-auto grid grid-cols-8 gap-4 mt-4">
+            <div className="container ml-2 mx-auto grid grid-cols-8 gap-4 mt-4">
                 <Sidebar user={user} />
                 <div className="col-span-7">
                     <Route path="/"> <AboutPage /></Route>

@@ -1,7 +1,9 @@
 
-
 function LoginPage(props) {
-    return <center><h1> {props.loginId ? "Are you sure to logout?" : "Please login"}</h1>
+    return <div>
+    <div className="mb-2 text-center text-3xl font-extrabold text-blue-800 bg-blue-50"> 
+        {props.loginId ? "Are you sure to logout?" : "Please login"}
+    </div>
     <form onSubmit={props.onLoginSubmit}>
         <table>
         <tbody>
@@ -13,6 +15,6 @@ function LoginPage(props) {
             </tr>
         </tbody></table>
     </form>
-    </center>
+    </div>
 }
 export default LoginPage;

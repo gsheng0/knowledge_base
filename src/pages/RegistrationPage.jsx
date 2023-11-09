@@ -1,7 +1,9 @@
 
 function RegistrationPage(props) {
-    return <center>
-        <h1>Please Register</h1>
+    return <div>
+        <div className="mb-2 text-center text-3xl font-extrabold text-blue-800 bg-blue-50">
+            Please Register
+        </div>        
         <form onSubmit={props.onRegistrationSubmit}>
         <table><tbody>
             <tr><td>email:</td><td><input id="email" type="text" /></td></tr>
@@ -14,7 +16,7 @@ function RegistrationPage(props) {
             </tr>
         </tbody></table>
         </form>        
-    </center>
+    </div>
 }
 
 export default RegistrationPage;

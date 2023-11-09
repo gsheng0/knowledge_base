@@ -22,8 +22,8 @@ function Content (props) {
 
     return (
         <div>
-            <div className="ml-2 font-semibold">Content (1st 128 characters): </div>
-            <div className="ml-2 ">
+            <div className="ml-2 mb-1 font-semibold">Content (1st 128 characters): </div>
+            <div className="ml-2 bg-yellow-100">
             {props.textContent && getShortContent(props.textContent)}
             </div>
         </div>

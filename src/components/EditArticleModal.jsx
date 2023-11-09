@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import "../index.css";
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
+import classNames from 'classnames';
 
 function EditArticleModal(props) {
     const [selectedLabels, setSelectedLabels] = useState(createSelectedLabels(props));
@@ -42,20 +43,48 @@ function EditArticleModal(props) {
     console.log( props);
     console.log(selectedLabels);
 
+    const actionButtonClassName = classNames({  "w-16": true, 
+                                                "mt-3": true,
+                                                "mb-3": true,
+                                                "bg-blue-100": true, 
+                                                "rounded-lg": true,  
+                                                "border-solid": true,  
+                                                "border-1": true, 
+                                                "border-blue-400": true,
+                                                "outline": true,
+                                                "outline-offset-1": true,
+                                                "outline-1": true,
+                                                "hover:text-blue-800": true,
+                                                "hover:font-extrabold": true
+                                                });
     return(
         <div>
             <Modal isOpen={props.popup} contentLabel="Article Editing Modal" >
-                <h2>{ props.articleToEdit.id === "" ? "Creating New " : "Viewing Existing "} 
-                    Article......</h2><br />
-                <form onSubmit={props.onSubmit}>
-                    <label>ID &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-                        <input name="id" type="text" placeholder="id" readOnly 
-                            value={props.articleToEdit.id}/><br />
-                    <label>TITLE &nbsp;&nbsp;&nbsp;&nbsp;</label>
-                        <input name="title" type="text" placeholder="Title" 
-                            defaultValue={props.articleToEdit.title}/><br /><br />
+                <div className="mb-3 text-center text-3xl font-extrabold text-blue-800 bg-blue-50">
+                    { props.articleToEdit.id === "" ? "Creating New " : "Viewing Existing "} Notes
+                </div>
+                <form className='text-left text-sm bg-yellow-50 rounded-2xl outline outline-1 outline-yellow-500' onSubmit={props.onSubmit}>
+                    <div className="mb-2 ml-5 grid grid-cols-2">
+                        <div className="grid grid-cols-8 mt-3">
+                            <label className="font-semibold">ID</label>
+                            <input type="text" className="col-span-6 text-md" name="id"  placeholder="id"  readonly
+                                value={props.articleToEdit.id}/>
+                        </div>
+                        <div className="grid grid-cols-8 mt-3">
+                            <label className="font-semibold col-span-2">STATUS</label>
+                            <input className="col-span-2 text-md" 
+                                    name="status" type="text" placeholder="status" readOnly 
+                                    value={props.articleToEdit.status}/>
+                        </div>
+                        <div className="grid grid-cols-8 mt-1">
+                            <label className="font-semibold mt-1">TITLE</label>
+                            <input className="col-span-6 text-lg bg-yellow-50" name="title" type="text" placeholder="Title" 
+                                    defaultValue={props.articleToEdit.title}/>
+                        </div>
+                    </div>
                     <textarea ref={textArea} name="textContent" hidden defaultValue={props.articleToEdit.textContent} />
-                    <ReactQuill
+                    <ReactQuill 
+                        className="ml-5 mr-5"
                         value={props.articleToEdit.textContent}
                         onChange={(content, deltal, source, editor) => {            
                             textArea.current.value = content;
@@ -67,8 +96,9 @@ function EditArticleModal(props) {
                                 ['image', 'code-block']
                                 ]
                             }}
-                        />
-                    <Select 
+                    />
+
+                    <Select className="ml-5 mr-5"
                         name="labels"
                         options={props.labelOptionList}
                         placeholder="select labels"
@@ -77,11 +107,10 @@ function EditArticleModal(props) {
                         isSearchable={true}
                         isMulti
                     />    
-                    <label>Status &nbsp;&nbsp;</label>
-                        <input name="status" type="text" placeholder="status" readOnly 
-                            value={props.articleToEdit.status}/><br /><br />
-                    <button type="submit">Apply</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <button onClick={props.onCancel}>Cancel</button>
+                    <div className="ml-5 mr-5 mt-2 mb-5 flex flex-row gap-2">
+                        <button className={actionButtonClassName} type="submit">Apply</button>
+                        <button className={actionButtonClassName} onClick={props.onCancel}>Cancel</button>
+                    </div>
                 </form>
             </Modal>
         </div>            

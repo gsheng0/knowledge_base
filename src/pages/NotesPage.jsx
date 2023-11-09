@@ -6,7 +6,7 @@ import SearchCriterialModal from "../components/SearchCriteriaModal";
 import { KbRepo } from "../KbRepo";
 import "../index.css";
 import { act } from "react-dom/test-utils";
-
+import classNames from "classnames";
 
 function NotesPage(props) {
     const [articleList, setArticleList] = useState([]);   
@@ -176,12 +176,23 @@ function NotesPage(props) {
         retrieveArticles(searchCriteria);
     }
 
-    const actionButtonClassName = "bg-blue-100 rounded-lg border-solid border-1 border-blue-400 outline outline-offset-1 outline-1 hover:text-blue-800 hover:font-extrabold";
+    const actionButtonClassName = classNames({  "w-16": true, 
+                                                "bg-blue-100": true, 
+                                                "rounded-lg": true,  
+                                                "border-solid": true,  
+                                                "border-1": true, 
+                                                "border-blue-400": true,
+                                                "outline": true,
+                                                "outline-offset-1": true,
+                                                "outline-1": true,
+                                                "hover:text-blue-800": true,
+                                                "hover:font-extrabold": true
+                                            });
 
-    return <div className="">
-            <div className="mb-10 text-center text-3xl font-extrabold text-blue-800">{props.loginId}'s Notes</div>
+    return <div>
+            <div className="mb-2 text-center text-3xl font-extrabold text-blue-800 bg-blue-50">Hi {props.loginId}!</div>
             { props.userId ?
-                <div className="text-center text-lg text-blue-800 flex flex-row gap-2">
+                <div className="bg-blue-50 text-center text-lg text-blue-800 flex flex-row gap-2">
                     <button className={actionButtonClassName} onClick={searchArticle}>
                         Search</button>
                     <button className={actionButtonClassName} onClick={newArticle}>
@@ -191,7 +202,9 @@ function NotesPage(props) {
                     <button className={actionButtonClassName} onClick={revertArticle}>Revert
                         </button>
                 </div>
-                : <div>login first!</div>
+                : <div className="mb-20 text-2xl bg-blue-50">
+                    Please login or register for free if you don't have an account.
+                  </div>
             }    
             <ArticleList 
                 articleListToShow={articleList} 

@@ -1,8 +1,11 @@
 
 
 function AccountPage(props) {
-    return <div>{
-        !props.user.userId ? "login or regsiter first" 
+    return <div>
+    <div className="mb-2 text-center text-3xl font-extrabold text-blue-800 bg-blue-50">Account</div>
+
+    {
+        !props.user.userId ? <div className="mb-20 text-2xl bg-blue-50">Please login or register for free if you don't have an account.</div>
         :
         <center>
         <h4>Your Profile</h4>
@@ -12,7 +15,8 @@ function AccountPage(props) {
             </tbody>
         </table>         
         </center>
-    }</div>
+    }
+    </div>
 }
 
 export default AccountPage;
