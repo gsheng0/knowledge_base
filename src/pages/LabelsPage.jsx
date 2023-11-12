@@ -151,7 +151,9 @@ function LabelsPage(props) {
                                                 "hover:font-extrabold": true
                                             });
     return <div>
-        <div className="mb-2 bg-blue-50 text-center text-3xl font-extrabold text-blue-800">Manage Tags</div>
+        <div className="h-16 bg-blue-50 text-center text-3xl font-extrabold text-blue-800">
+            Manage Tags
+        </div>
         { props.userId ?
             <div className="bg-blue-50 text-center text-lg text-blue-800 flex flex-row gap-2">
                 <button className={actionButtonClassName} onClick={newLabel}><h4>New</h4>
