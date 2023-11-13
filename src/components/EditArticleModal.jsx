@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from 'react';
 import "../index.css";
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
-import classNames from 'classnames';
+import { actionButtonClassName, pageTitleClassName, notesClassName, formLabelClassName, formInputClassName, formFixedClassName } from '../AppCss';
 
 function EditArticleModal(props) {
     const [selectedLabels, setSelectedLabels] = useState(createSelectedLabels(props));
@@ -43,73 +43,63 @@ function EditArticleModal(props) {
     console.log( props);
     console.log(selectedLabels);
 
-    const actionButtonClassName = classNames({  "w-16": true, 
-                                                "mt-3": true,
-                                                "mb-3": true,
-                                                "bg-blue-100": true, 
-                                                "rounded-lg": true,  
-                                                "border-solid": true,  
-                                                "border-1": true, 
-                                                "border-blue-400": true,
-                                                "outline": true,
-                                                "outline-offset-1": true,
-                                                "outline-1": true,
-                                                "hover:text-blue-800": true,
-                                                "hover:font-extrabold": true
-                                                });
     return(
         <div>
             <Modal isOpen={props.popup} contentLabel="Article Editing Modal" >
-                <div className="mb-3 text-center text-3xl font-extrabold text-blue-800 bg-blue-50">
+                <div className={pageTitleClassName}>
                     { props.articleToEdit.id === "" ? "Creating New " : "Viewing Existing "} Notes
                 </div>
-                <form className='text-left text-sm bg-yellow-50 rounded-2xl outline outline-1 outline-yellow-500' onSubmit={props.onSubmit}>
+                <form className={notesClassName} onSubmit={props.onSubmit}>
                     <div className="mb-2 ml-5 grid grid-cols-2">
-                        <div className="grid grid-cols-8 mt-3">
-                            <label className="font-semibold">ID</label>
-                            <input type="text" className="col-span-6 text-md" name="id"  placeholder="id"  readonly
+                        <div className="mt-2 grid">
+                            <label className={formLabelClassName}>ID</label>
+                            <input type="text" className={formFixedClassName} name="id"  placeholder="id"  readonly
                                 value={props.articleToEdit.id}/>
                         </div>
-                        <div className="grid grid-cols-8 mt-3">
-                            <label className="font-semibold col-span-2">STATUS</label>
-                            <input className="col-span-2 text-md" 
+                        <div className="mt-2 grid">
+                            <label className={formLabelClassName}>STATUS</label>
+                            <input className={formFixedClassName} 
                                     name="status" type="text" placeholder="status" readOnly 
                                     value={props.articleToEdit.status}/>
                         </div>
-                        <div className="grid grid-cols-8 mt-1">
-                            <label className="font-semibold mt-1">TITLE</label>
-                            <input className="col-span-6 text-lg bg-yellow-50" name="title" type="text" placeholder="Title" 
+                        <div className="grid mt-2">
+                            <label className={formLabelClassName}>TITLE</label>
+                            <input className={formInputClassName} name="title" type="text" placeholder="Title" 
                                     defaultValue={props.articleToEdit.title}/>
                         </div>
                     </div>
                     <textarea ref={textArea} name="textContent" hidden defaultValue={props.articleToEdit.textContent} />
-                    <ReactQuill 
-                        className="ml-5 mr-5"
-                        value={props.articleToEdit.textContent}
-                        onChange={(content, deltal, source, editor) => {            
-                            textArea.current.value = content;
-                        }}
-                        modules={{
-                                toolbar: [
-                                [{ header: [1, 2, false] }],
-                                ['bold', 'italic', 'underline'],
-                                ['image', 'code-block']
-                                ]
+                    <div className='ml-5 mb-5 mr-5'>
+                        <label className={formLabelClassName}>CONTENT</label>
+                        <ReactQuill 
+                            className="mt-1 mb-2 bg-white"
+                            value={props.articleToEdit.textContent}
+                            onChange={(content, deltal, source, editor) => {            
+                                textArea.current.value = content;
                             }}
-                    />
+                            modules={{
+                                    toolbar: [
+                                    [{ header: [1, 2, false] }],
+                                    ['bold', 'italic', 'underline'],
+                                    ['image', 'code-block']
+                                    ]
+                                }}
+                        />
 
-                    <Select className="ml-5 mr-5"
-                        name="labels"
-                        options={props.labelOptionList}
-                        placeholder="select labels"
-                        value={selectedLabels}
-                        onChange={onMultiLableSelectorChange}
-                        isSearchable={true}
-                        isMulti
-                    />    
-                    <div className="ml-5 mr-5 mt-2 mb-5 flex flex-row gap-2">
-                        <button className={actionButtonClassName} type="submit">Apply</button>
-                        <button className={actionButtonClassName} onClick={props.onCancel}>Cancel</button>
+                        <label className={formLabelClassName}>LABEL</label>
+                        <Select className="mt-1 font-bold text-green-600"
+                            name="labels"
+                            options={props.labelOptionList}
+                            placeholder="select labels"
+                            value={selectedLabels}
+                            onChange={onMultiLableSelectorChange}
+                            isSearchable={true}
+                            isMulti
+                        />    
+                        <div className="mb-5 mt-5 flex gap-2">
+                            <button className={actionButtonClassName} type="submit">Apply</button>
+                            <button className={actionButtonClassName} onClick={props.onCancel}>Cancel</button>
+                        </div>
                     </div>
                 </form>
             </Modal>

@@ -1,20 +1,23 @@
+import { pageTitleClassName, actionButtonClassName, formLabelClassName, formInputClassName } from "../AppCss"; 
 
 function RegistrationPage(props) {
     return <div>
-        <div className="mb-2 text-center text-3xl font-extrabold text-blue-800 bg-blue-50">
-            Please Register
+        <div className={pageTitleClassName}>
+            Registration
         </div>        
-        <form onSubmit={props.onRegistrationSubmit}>
-        <table><tbody>
-            <tr><td>email:</td><td><input id="email" type="text" /></td></tr>
-            <tr><td>Login ID:</td><td><input id="loginId" type="text" /></td></tr>
-            <tr><td>Password:</td><td><input id="password" type="password" /></td></tr>
-            <tr><td>re-type Password:</td><td><input id="reTypedPassword" type="password" /></td></tr>
-            <tr><td></td>
-                <td><button type="submit">Register</button>&nbsp;&nbsp;
-                    <button onClick={props.onRegistrationCancel}>Cancel</button></td>
-            </tr>
-        </tbody></table>
+        <form onSubmit={props.onRegistrationSubmit} className="ml-16 grid">
+            <label className={formLabelClassName}>Email</label>
+            <input className={formInputClassName} id="email" type="text" />
+            <label className={formLabelClassName}>Login ID</label>
+            <input className={formInputClassName} id="loginId" type="text" />
+            <label className={formLabelClassName}>Password</label>
+            <input className={formInputClassName} id="password" type="password" />
+            <label className={formLabelClassName}>re-type Password</label>
+            <input className={formInputClassName} id="reTypedPassword" type="password" />          
+            <div className="flex gap-5 mt-5">
+                <button className={actionButtonClassName} type="submit">Register</button>
+                <button className={actionButtonClassName} onClick={props.onRegistrationCancel}>Cancel</button>
+            </div>
         </form>        
     </div>
 }

@@ -1,11 +1,12 @@
 import React from "react";
 import "../index.css";
+import { cardTitleClassName } from "../AppCss";
 
 function Title ({title, status}) {
     console.log("[Title] rendering......");
     console.log({title, status});
     return (
-        <div className="ml-2 mr-2 mb-2 text-lg text-center font-extrabold text-blue-800 ">
+        <div className={cardTitleClassName}>
             {title + " (" + status + ")"}
         </div>    
            

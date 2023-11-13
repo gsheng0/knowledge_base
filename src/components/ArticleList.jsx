@@ -2,13 +2,14 @@ import React from "react";
 
 import Article from "./Article";
 import "../index.css";
+import { cardListClassName } from "../AppCss";
 
 
 function ArticleList (props) {
     console.log("[ArticleList] rendering: ");
     console.log(props);
     return (
-        <div className="container mx-auto grid lg:grid-cols-2 xl:grid-cols-4 gap-4 mt-4">
+        <div className={cardListClassName}>
         { 
             props.articleListToShow.map((article) => {
                 return (

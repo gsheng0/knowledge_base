@@ -5,8 +5,7 @@ import EditArticleModal from "../components/EditArticleModal";
 import SearchCriterialModal from "../components/SearchCriteriaModal";
 import { KbRepo } from "../KbRepo";
 import "../index.css";
-import { act } from "react-dom/test-utils";
-import classNames from "classnames";
+import { actionButtonClassName, actionButtonBarClassName, pageTitleClassName } from "../AppCss";
 
 function NotesPage(props) {
     const [articleList, setArticleList] = useState([]);   
@@ -176,23 +175,10 @@ function NotesPage(props) {
         retrieveArticles(searchCriteria);
     }
 
-    const actionButtonClassName = classNames({  "w-16": true, 
-                                                "bg-blue-100": true, 
-                                                "rounded-lg": true,  
-                                                "border-solid": true,  
-                                                "border-1": true, 
-                                                "border-blue-400": true,
-                                                "outline": true,
-                                                "outline-offset-1": true,
-                                                "outline-1": true,
-                                                "hover:text-blue-800": true,
-                                                "hover:font-extrabold": true
-                                            });
-
     return <div>
-            <div className="h-16 text-center text-3xl font-extrabold text-blue-800 bg-blue-50">Hi {props.loginId}!</div>
+            <div className={pageTitleClassName}>Hi {props.loginId}!</div>
             { props.userId ?
-                <div className="bg-blue-50 text-center text-lg text-blue-800 flex flex-row gap-2">
+                <div className={actionButtonBarClassName}>
                     <button className={actionButtonClassName} onClick={searchArticle}>Search</button>
                     <button className={actionButtonClassName} onClick={newArticle}>New</button>
                     <button className={actionButtonClassName} onClick={saveArticleChanges}>Save</button>

@@ -5,7 +5,7 @@ import EditLabelModal from "../components/EditLabelModal";
 import { LABELS } from "../components/MenuBar";
 import { KbRepo } from "../KbRepo";
 import "../index.css";
-import classNames from "classnames";
+import { pageTitleClassName, actionButtonClassName, actionButtonBarClassName } from "../AppCss";
 
 function LabelsPage(props) {
     const [labelList, setLabelList] = useState([]);
@@ -138,30 +138,18 @@ function LabelsPage(props) {
         retrieveLabels();
     }
 
-    const actionButtonClassName = classNames({  "w-16": true, 
-                                                "bg-blue-100": true, 
-                                                "rounded-lg": true,  
-                                                "border-solid": true,  
-                                                "border-1": true, 
-                                                "border-blue-400": true,
-                                                "outline": true,
-                                                "outline-offset-1": true,
-                                                "outline-1": true,
-                                                "hover:text-blue-800": true,
-                                                "hover:font-extrabold": true
-                                            });
     return <div>
-        <div className="h-16 bg-blue-50 text-center text-3xl font-extrabold text-blue-800">
+        <div className={pageTitleClassName}>
             Manage Tags
         </div>
         { props.userId ?
-            <div className="bg-blue-50 text-center text-lg text-blue-800 flex flex-row gap-2">
+            <div className={actionButtonBarClassName}>
                 <button className={actionButtonClassName} onClick={newLabel}><h4>New</h4>
-                    </button>&nbsp;
+                    </button>
                 <button className={actionButtonClassName} onClick={saveLabelChanges}><h4>Save</h4>
-                    </button>&nbsp;
+                    </button>
                 <button className={actionButtonClassName}  onClick={revertLabel}><h4>Revert</h4>
-                    </button>&nbsp;
+                    </button>
             </div>
             : <div className="mb-20 text-2xl bg-blue-50">
                 Please login or register for free if you don't have an account.
